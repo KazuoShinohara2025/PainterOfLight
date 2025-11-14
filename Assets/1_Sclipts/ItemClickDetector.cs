@@ -2,9 +2,14 @@ using UnityEngine;
 
 public class ItemClickDetector : MonoBehaviour
 {
+    [SerializeField] private GameObject open;
     public Transform WoodChest; // WoodChestのTransformをInspectorで指定
     public float interactDistance = 3f; // クリック可能な距離
 
+    public void Start()
+    {
+        open.SetActive(false);
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.F)) 
@@ -20,7 +25,8 @@ public class ItemClickDetector : MonoBehaviour
                 {
                     if (hit.transform == WoodChest)
                     {
-                        Destroy(WoodChest.gameObject);
+                        open.SetActive(true);
+                        //Destroy(WoodChest.gameObject);
                     }
                 }
             }

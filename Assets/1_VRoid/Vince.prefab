@@ -40,6 +40,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Vince
       objectReference: {fileID: 0}
+    - target: {fileID: -1728013695380148634, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 2953604236389334553, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_DirtyAABB
       value: 0
@@ -68,17 +72,21 @@ PrefabInstance:
       propertyPath: m_AABB.m_Extent.z
       value: 0.13836282
       objectReference: {fileID: 0}
+    - target: {fileID: 4870552773557632513, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 40db3173a05ae3242b1c182a09b0a183, type: 2}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.42055
+      value: -8.29235
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 21.39072
+      value: 22.05546
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalRotation.w
