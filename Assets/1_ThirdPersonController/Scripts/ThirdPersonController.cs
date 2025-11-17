@@ -15,6 +15,10 @@ namespace StarterAssets
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Player")]
+        [Header("Interaction")]
+        public Transform interactionRayOrigin;
+        private InteractionManager _interactionManager;
+
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
 
@@ -134,15 +138,16 @@ namespace StarterAssets
 
         private void Start()
         {
+            _interactionManager = GetComponent<InteractionManager>();
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
+#if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
             AssignAnimationIDs();
@@ -159,6 +164,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            Interact();
         }
 
         private void LateUpdate()
@@ -388,5 +394,19 @@ namespace StarterAssets
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
+
+        private void Interact()
+        {
+            if (_input.interact && _interactionManager != null)
+            {
+                Vector3 rayOrigin = interactionRayOrigin.position;
+                Vector3 rayDirection = _mainCamera.transform.forward;
+
+                _interactionManager.HandleInteraction(rayOrigin, rayDirection);
+
+                _input.interact = false;
+            }
+        }
+
     }
 }

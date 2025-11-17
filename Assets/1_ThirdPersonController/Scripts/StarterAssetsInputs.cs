@@ -12,8 +12,14 @@ namespace StarterAssets
 		public Vector2 look;
 		public bool jump;
 		public bool sprint;
+		public bool interact;
+		public bool attack;
+		public bool lighting;
+		public bool skil;
+		public bool ult;
 
-		[Header("Movement Settings")]
+
+        [Header("Movement Settings")]
 		public bool analogMovement;
 
 		[Header("Mouse Cursor Settings")]
@@ -43,10 +49,31 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
+
+		public void OnInteract(InputValue value)
+		{
+			InteractInput(value.isPressed);
+        }
+		public void OnAttack(InputValue value)
+		{
+			AttackInput(value.isPressed);
+        }
+		public void OnLighting(InputValue value)
+		{
+			LightingInput(value.isPressed);
+        }
+		public void OnSkil(InputValue value)
+		{
+			SkilInput(value.isPressed);
+        }
+		public void OnUlt(InputValue value)
+		{
+			UltInput(value.isPressed);
+        }
 #endif
 
 
-		public void MoveInput(Vector2 newMoveDirection)
+        public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
 		} 
@@ -66,7 +93,27 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
-		private void OnApplicationFocus(bool hasFocus)
+		public void InteractInput(bool newSelectState)
+		{
+            interact = newSelectState;
+        }
+		public void AttackInput(bool newAttackState)
+		{
+			attack = newAttackState;
+        }
+		public void LightingInput(bool newLightingState)
+		{
+			lighting = newLightingState;
+        }
+		public void SkilInput(bool newSkilState)
+		{
+			skil = newSkilState;
+        }
+		public void UltInput(bool newUltState)
+		{
+			ult = newUltState;
+        }
+        private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
 		}
