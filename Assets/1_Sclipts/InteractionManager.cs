@@ -10,14 +10,15 @@ public class InteractionManager : MonoBehaviour
     RaycastHit hit;
     public LayerMask interactableLayers;
 
+   
     public void HandleInteraction(Vector3 rayOrigin, Vector3 rayDirection)
     {
         Debug.Log($"HandleInteraction called. Range: {interactionRange}, Layers: {interactableLayers.value}");
         if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hitInfo, interactionRange, interactableLayers) ||
-            Physics.SphereCast(transform.position, detectionRadius, transform.forward, out hit, 0f, interactableLayers))
+            Physics.SphereCast(transform.position, detectionRadius, transform.forward, out hit, interactionRange, interactableLayers))
         {
             
-            Debug.Log($"Raycast hit: {hitInfo.collider.gameObject.name}, Tag: {hitInfo.collider.tag}");
+            //Debug.Log($"Raycast hit: {hitInfo.collider.gameObject.name}, Tag: {hitInfo.collider.tag}");
             switch (hitInfo.collider.tag)
             {
                 case "Door":
