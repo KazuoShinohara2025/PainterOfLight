@@ -165,6 +165,10 @@ namespace StarterAssets
             GroundedCheck();
             Move();
             Interact();
+            Attack();
+            Lighting();
+            Skil();
+            Ult();
         }
 
         private void LateUpdate()
@@ -405,6 +409,46 @@ namespace StarterAssets
                 _interactionManager.HandleInteraction(rayOrigin, rayDirection);
 
                 _input.interact = false;
+            }
+        }
+
+        private void Attack()
+        {
+            if (_input.attack && _interactionManager != null)
+            {
+                _input.attack = true;
+                Debug.Log("attack");
+                _input.attack = false;
+            }
+        }
+
+        private void Lighting()
+        {
+            if (_input.lighting && _interactionManager != null)
+            {
+                _input.lighting = true;
+                Debug.Log("lighting");
+                _input.lighting = false;
+            }
+        }
+
+        private void Skil()
+        {
+            if (_input.skil && _interactionManager != null)
+            {
+                _input.skil = true;
+                Debug.Log("skil");
+                _input.skil = false;
+            }
+        }
+
+        private void Ult()
+        {
+            if (_input.ult && _interactionManager != null)
+            {
+                _input.ult = true;
+                Debug.Log("ult");
+                _input.ult = false;
             }
         }
 
