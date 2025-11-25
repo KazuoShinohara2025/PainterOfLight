@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -140,7 +140,7 @@ namespace StarterAssets
         {
             _interactionManager = GetComponent<InteractionManager>();
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
@@ -416,8 +416,10 @@ namespace StarterAssets
         {
             if (_input.attack && _interactionManager != null)
             {
-                _input.attack = true;
+                _animator.SetTrigger("Attack");
+
                 Debug.Log("attack");
+                _input.attack = true;
                 _input.attack = false;
             }
         }
@@ -426,18 +428,25 @@ namespace StarterAssets
         {
             if (_input.lighting && _interactionManager != null)
             {
-                _input.lighting = true;
+                _animator.SetTrigger("Lighting");
+                MoveSpeed = 0f;
+                SprintSpeed = 0f;
                 Debug.Log("lighting");
+                _input.lighting = true;
                 _input.lighting = false;
             }
+            //MoveSpeed = 2.0f;
+            //SprintSpeed = 5.335f;
         }
 
         private void Skil()
         {
             if (_input.skil && _interactionManager != null)
             {
-                _input.skil = true;
+                _animator.SetTrigger("Skil");
+
                 Debug.Log("skil");
+                _input.skil = true;
                 _input.skil = false;
             }
         }
@@ -446,8 +455,13 @@ namespace StarterAssets
         {
             if (_input.ult && _interactionManager != null)
             {
-                _input.ult = true;
+                _animator.SetBool("Ult", true);
                 Debug.Log("ult");
+                if (_input.ult && _animator.GetBool("Ult") == true)
+                {
+                    _animator.SetBool("Ult", false);
+                }
+                _input.ult = true;
                 _input.ult = false;
             }
         }
