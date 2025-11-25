@@ -429,14 +429,12 @@ namespace StarterAssets
             if (_input.lighting && _interactionManager != null)
             {
                 _animator.SetTrigger("Lighting");
-                MoveSpeed = 0f;
-                SprintSpeed = 0f;
+                
                 Debug.Log("lighting");
                 _input.lighting = true;
                 _input.lighting = false;
             }
-            //MoveSpeed = 2.0f;
-            //SprintSpeed = 5.335f;
+            
         }
 
         private void Skil()
