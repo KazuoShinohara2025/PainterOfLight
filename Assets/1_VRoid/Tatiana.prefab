@@ -110,7 +110,7 @@ PrefabInstance:
     - target: {fileID: 4870552773557632513, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 40db3173a05ae3242b1c182a09b0a183, type: 2}
+      objectReference: {fileID: 9100000, guid: 2ddeb888eafdc05458b4fc8fbd53bb54, type: 2}
     - target: {fileID: 4870552773557632513, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       propertyPath: m_CullingMode
       value: 1
