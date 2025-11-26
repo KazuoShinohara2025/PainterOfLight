@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -15,6 +15,10 @@ namespace StarterAssets
     public class ThirdPersonController : MonoBehaviour
     {
         [Header("Player")]
+        [Header("Interaction")]
+        public Transform interactionRayOrigin;
+        private InteractionManager _interactionManager;
+
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
 
@@ -134,15 +138,16 @@ namespace StarterAssets
 
         private void Start()
         {
+            _interactionManager = GetComponent<InteractionManager>();
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
+#if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+            Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
 #endif
 
             AssignAnimationIDs();
@@ -159,6 +164,11 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            Interact();
+            Attack();
+            Lighting();
+            Skil();
+            Ult();
         }
 
         private void LateUpdate()
@@ -388,5 +398,71 @@ namespace StarterAssets
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
         }
+
+        private void Interact()
+        {
+            if (_input.interact && _interactionManager != null)
+            {
+                Vector3 rayOrigin = interactionRayOrigin.position;
+                Vector3 rayDirection = _mainCamera.transform.forward;
+
+                _interactionManager.HandleInteraction(rayOrigin, rayDirection);
+
+                _input.interact = false;
+            }
+        }
+
+        private void Attack()
+        {
+            if (_input.attack && _interactionManager != null)
+            {
+                _animator.SetTrigger("Attack");
+
+                Debug.Log("attack");
+                _input.attack = true;
+                _input.attack = false;
+            }
+        }
+
+        private void Lighting()
+        {
+            if (_input.lighting && _interactionManager != null)
+            {
+                _animator.SetTrigger("Lighting");
+                
+                Debug.Log("lighting");
+                _input.lighting = true;
+                _input.lighting = false;
+            }
+            
+        }
+
+        private void Skil()
+        {
+            if (_input.skil && _interactionManager != null)
+            {
+                _animator.SetTrigger("Skil");
+
+                Debug.Log("skil");
+                _input.skil = true;
+                _input.skil = false;
+            }
+        }
+
+        private void Ult()
+        {
+            if (_input.ult && _interactionManager != null)
+            {
+                _animator.SetBool("Ult", true);
+                Debug.Log("ult");
+                if (_input.ult && _animator.GetBool("Ult") == true)
+                {
+                    _animator.SetBool("Ult", false);
+                }
+                _input.ult = true;
+                _input.ult = false;
+            }
+        }
+
     }
 }

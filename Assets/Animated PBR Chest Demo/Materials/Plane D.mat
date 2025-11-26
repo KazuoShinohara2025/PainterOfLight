@@ -161,8 +161,8 @@ Material:
     - _ZWrite: 1
     - __dirty: 0
     m_Colors:
-    - _BaseColor: {r: 0.27843136, g: 0.27843136, b: 0.27843136, a: 1}
-    - _Color: {r: 0.27843133, g: 0.27843133, b: 0.27843133, a: 1}
+    - _BaseColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    - _Color: {r: 0.09999997, g: 0.09999997, b: 0.09999997, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HitColor: {r: 1, g: 1, b: 1, a: 1}
     - _HitPosition: {r: 0, g: 0, b: 0, a: 0}
