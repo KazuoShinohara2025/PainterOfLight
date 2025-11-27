@@ -1,8 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem; // Input Systemの名前空間
 
 public class CharacterCombatController : MonoBehaviour
 {
+    [Header("ScriptableObject Data")]
+    // ここでLily、Rose、TatianaそれぞれのScriptableObjectを割り当てる
+    public PlayerData characterStatus;
+
     [Header("Input Actions (Input System Assetからドラッグ)")]
     public InputActionReference attackInput; // Left Click
     public InputActionReference lightingInput; // Right Click
@@ -67,8 +72,10 @@ public class CharacterCombatController : MonoBehaviour
         // ボタンが押された時だけ実行する判定
         if (value.isPressed)
         {
-            animator.SetTrigger("Attack");
-            //SpawnVFX(attackVFX);
+            // アニメーションのトリガー名にScriptableObjectの値を反映
+            animator.SetTrigger(characterStatus.attackAnimationTrigger);
+            // 当たり判定やダメージ計算の準備
+            CalculateDamage(characterStatus.baseAttack, characterStatus.attackDamageMultiplier);
         }
     }
     public void OnLighting(InputValue value)
@@ -128,5 +135,13 @@ public class CharacterCombatController : MonoBehaviour
             GameObject vfxObj = Instantiate(vfxPrefab, vfxSpawnPoint.position, transform.rotation);
             Destroy(vfxObj, 3.0f);
         }
+    }
+    // --- 攻撃力を反映させたダメージ計算（例） ---
+    void CalculateDamage(float baseAttack, float multiplier)
+    {
+        float finalDamage = baseAttack * multiplier;
+        // デバッグ出力
+        Debug.Log($"{characterStatus.Name} の攻撃ダメージ: {finalDamage}");
+        // 実際にはここで当たり判定の処理を行い、敵にダメージを与える
     }
 }

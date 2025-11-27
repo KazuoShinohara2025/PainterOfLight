@@ -117,15 +117,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.29235
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 22.05546
+      value: 67.64
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       propertyPath: m_LocalRotation.w
@@ -211,6 +211,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5997540326471971726}
+    - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1278082132103758722}
   m_SourcePrefab: {fileID: -3956505258223990651, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
 --- !u!1 &4781366810710203574 stripped
 GameObject:
@@ -366,6 +369,32 @@ MonoBehaviour:
   interactableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1278082132103758722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4781366810710203574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea90ce5f67c42d44a1afd3445391676, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterCombatController
+  attackInput: {fileID: 7913776476343440155, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  lightingInput: {fileID: -6788589665633565049, guid: b1b4b6e1ff3da1e42991511497778675, type: 3}
+  skiInput: {fileID: 495759431216799396, guid: b1b4b6e1ff3da1e42991511497778675, type: 3}
+  ultInput: {fileID: 4892386020228056726, guid: b1b4b6e1ff3da1e42991511497778675, type: 3}
+  attackVFX: {fileID: 207655377872975653, guid: 80f0e671d1e9a41448454036b947bb13, type: 3}
+  lightingVFX: {fileID: 1399132805510176293, guid: 0813002f00b0403eb40e00e1e8a02b71, type: 3}
+  skilVFX: {fileID: 8374840692030496616, guid: 3f04f2ba93e24128a7c9d1da26c73e81, type: 3}
+  ultVFX: {fileID: 7255130530750511816, guid: 7ee31c9566f04c70be1071692eb80476, type: 3}
+  vfxSpawnPoint: {fileID: 5111742195282457351}
+--- !u!4 &5111742195282457351 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7831338684674589143, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
+  m_PrefabInstance: {fileID: 3052894618810217168}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7910209242373144224 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5159078012444724336, guid: 9b9fbe8c834a40f4b838ac8b224fdb86, type: 3}
@@ -393,7 +422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.15234947
+      value: 0.15235138
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.y
