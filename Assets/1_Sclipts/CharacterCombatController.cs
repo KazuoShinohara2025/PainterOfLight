@@ -11,13 +11,13 @@ public class CharacterCombatController : MonoBehaviour
     [Header("Input Actions (Input System Assetからドラッグ)")]
     public InputActionReference attackInput; // Left Click
     public InputActionReference lightingInput; // Right Click
-    public InputActionReference skiInput;  // E Key
+    public InputActionReference skiIlnput;  // E Key
     public InputActionReference ultInput; // R Key
 
     [Header("VFX Prefabs (エフェクト)")]
     public GameObject attackVFX;
     public GameObject lightingVFX;
-    public GameObject skilVFX;
+    public GameObject skillVFX;
     public GameObject ultVFX;
 
     [Header("Settings")]
@@ -86,11 +86,11 @@ public class CharacterCombatController : MonoBehaviour
             //SpawnVFX(lightingVFX);
         }
     }
-    public void OnSkil(InputValue value)
+    public void OnSkill(InputValue value)
     {
         if (value.isPressed)
         {
-            animator.SetTrigger("Skil");
+            animator.SetTrigger("Skill");
             //SpawnVFX(skilVFX);
         }
     }
@@ -119,7 +119,7 @@ public class CharacterCombatController : MonoBehaviour
 
     public void TriggerSkillVFX()
     {
-        SpawnVFX(skilVFX);
+        SpawnVFX(skillVFX);
     }
 
     public void TriggerUltimateVFX()

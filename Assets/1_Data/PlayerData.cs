@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerData", menuName = "Date/PlayerData")]
+[CreateAssetMenu(fileName = "PlayerData", menuName = "GameDate/PlayerData")]
 public class PlayerData : ScriptableObject
 {
 
@@ -27,6 +27,10 @@ public class PlayerData : ScriptableObject
 
     [Header("二段ジャンプ")]
     public bool doubleJump = false;
+
+    [Header("報酬")]
+    [Min(0)] public int expReward = 0;        // 獲得経験値
+    [Min(0)] public int goldReward = 0;       // 獲得ゴールド
 
 
     [Header("アクションデータ (固有値)")]
