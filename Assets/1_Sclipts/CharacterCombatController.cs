@@ -82,16 +82,20 @@ public class CharacterCombatController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            animator.SetTrigger("Lighting");
-            //SpawnVFX(lightingVFX);
+            // アニメーションのトリガー名にScriptableObjectの値を反映
+            animator.SetTrigger(characterStatus.lightingAnimationTrigger);
+            // 当たり判定やダメージ計算の準備
+            CalculateDamage(characterStatus.lightingRange, characterStatus.lightingRangeMultiplier);
         }
     }
     public void OnSkill(InputValue value)
     {
         if (value.isPressed)
         {
-            animator.SetTrigger("Skill");
-            //SpawnVFX(skilVFX);
+            // アニメーションのトリガー名にScriptableObjectの値を反映
+            animator.SetTrigger(characterStatus.skillAnimationTrigger);
+            // 当たり判定やダメージ計算の準備
+            CalculateDamage(characterStatus.baseAttack, characterStatus.skillDamageMultiplier);
         }
     }
 
@@ -99,8 +103,10 @@ public class CharacterCombatController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            animator.SetTrigger("Ult");
-            //SpawnVFX(ultVFX);
+            // アニメーションのトリガー名にScriptableObjectの値を反映
+            animator.SetTrigger(characterStatus.ultAnimationTrigger);
+            // 当たり判定やダメージ計算の準備
+            CalculateDamage(characterStatus.baseAttack, characterStatus.ultDamageMultiplier);
         }
     }
 
@@ -133,7 +139,7 @@ public class CharacterCombatController : MonoBehaviour
         if (vfxPrefab != null && vfxSpawnPoint != null)
         {
             GameObject vfxObj = Instantiate(vfxPrefab, vfxSpawnPoint.position, transform.rotation);
-            Destroy(vfxObj, 3.0f);
+            Destroy(vfxObj, 1.0f);
         }
     }
     // --- 攻撃力を反映させたダメージ計算（例） ---

@@ -22,6 +22,9 @@ public class PlayerData : ScriptableObject
     [Header("移動速度")]
     [Min(0f)] public float moveSpeed = 5.335f;
 
+    [Header("ライトの範囲")]
+    [Min(0f)] public float lightingRange = 10.0f;
+
     [Header("レベル")]
     [Min(0f)] public float lv = 1f;
 
@@ -43,7 +46,7 @@ public class PlayerData : ScriptableObject
     public float attackCost = 1.0f;
 
     public string lightingAnimationTrigger = "Lighting";
-    public float lightingRangeMultiplier = 10.0f; // ライティングの範囲倍率
+    public float lightingRangeMultiplier = 1.0f; // ライティングの範囲倍率
     public float lightingCooldownTime = 5.0f;     // ライティングのクールダウン
     public float lightingDurationTime = 60.0f;    // ライティングの持続時間
     public float lightingCost = 5.0f;

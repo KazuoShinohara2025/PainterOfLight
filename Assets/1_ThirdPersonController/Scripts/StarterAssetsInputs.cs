@@ -15,7 +15,7 @@ namespace StarterAssets
 		public bool interact;
 		public bool attack;
 		public bool lighting;
-		public bool skil;
+		public bool skill;
 		public bool ult;
 
 
@@ -107,7 +107,7 @@ namespace StarterAssets
         }
 		public void SkilInput(bool newSkilState)
 		{
-			skil = newSkilState;
+			skill = newSkilState;
         }
 		public void UltInput(bool newUltState)
 		{
