@@ -46,7 +46,7 @@ public class PlayerData : ScriptableObject
     public float attackCost = 1.0f;
 
     public string lightingAnimationTrigger = "Lighting";
-    public float lightingRangeMultiplier = 1.0f; // ライティングの範囲倍率
+    public float lightingRangeMultiplier = 5.0f; // ライティングの範囲倍率
     public float lightingCooldownTime = 5.0f;     // ライティングのクールダウン
     public float lightingDurationTime = 60.0f;    // ライティングの持続時間
     public float lightingCost = 5.0f;

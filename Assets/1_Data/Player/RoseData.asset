@@ -18,14 +18,17 @@ MonoBehaviour:
   baseAttack: 4
   baseDefense: 2
   moveSpeed: 5.335
+  lightingRange: 10
   lv: 1
   doubleJump: 0
+  totalExp: 0
+  totalGold: 0
   attackAnimationTrigger: Attack
   attackDamageMultiplier: 1
   attackCooldownTime: 1
   attackCost: 1
   lightingAnimationTrigger: Lighting
-  lightingRangeMultiplier: 10
+  lightingRangeMultiplier: 5
   lightingCooldownTime: 5
   lightingDurationTime: 60
   lightingCost: 5
