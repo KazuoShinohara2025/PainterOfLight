@@ -28,9 +28,11 @@ public class PlayerData : ScriptableObject
     [Header("二段ジャンプ")]
     public bool doubleJump = false;
 
-    [Header("報酬")]
-    [Min(0)] public int expReward = 0;        // 獲得経験値
-    [Min(0)] public int goldReward = 0;       // 獲得ゴールド
+    [Header("獲得経験値")]
+    [Min(0)] public int totalExp = 0;        // 獲得経験値
+
+    [Header("獲得ゴールド")]
+    [Min(0)] public int totalGold = 0;       // 獲得ゴールド
 
 
     [Header("アクションデータ (固有値)")]
