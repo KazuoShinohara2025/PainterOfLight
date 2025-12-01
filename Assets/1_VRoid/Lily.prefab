@@ -53,7 +53,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.15234947
+      value: 0.15235138
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -188,22 +188,22 @@ PrefabInstance:
     - target: {fileID: 4870552773557632513, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 40db3173a05ae3242b1c182a09b0a183, type: 2}
+      objectReference: {fileID: 9100000, guid: a8068c93fa2087a469015f0bb7ddec71, type: 2}
     - target: {fileID: 4870552773557632513, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       propertyPath: m_CullingMode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.29235
+      value: 48
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 22.05546
+      value: 67.64
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -289,7 +289,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5834030679739078687}
+    - targetCorrespondingSourceObject: {fileID: -1728013695380148634, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8029180401683677873}
   m_SourcePrefab: {fileID: -3956505258223990651, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
+--- !u!4 &4816081002904676508 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7831338684674589143, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
+  m_PrefabInstance: {fileID: 3348612335105091915}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5079063802770949933 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1728013695380148634, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
@@ -444,6 +452,27 @@ MonoBehaviour:
   interactableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8029180401683677873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5079063802770949933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ea90ce5f67c42d44a1afd3445391676, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterCombatController
+  attackInput: {fileID: 7913776476343440155, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  lightingInput: {fileID: -6788589665633565049, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  skiInput: {fileID: 495759431216799396, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  ultInput: {fileID: 4892386020228056726, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  attackVFX: {fileID: 2379924841332722358, guid: eaef460a7d85414885436061804a60b8, type: 3}
+  lightingVFX: {fileID: 7595596705970393382, guid: ee1c97ea9acf4836a5c4543bc2b3a6a6, type: 3}
+  skilVFX: {fileID: 696709159327299983, guid: 345a7000797345899cfc3701ac5969b9, type: 3}
+  ultVFX: {fileID: 696709159327299983, guid: 2b4f952c29d84c8aa7478f721eea4c6c, type: 3}
+  vfxSpawnPoint: {fileID: 4816081002904676508}
 --- !u!4 &7629118878935016763 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5159078012444724336, guid: 65ffc56030734ec438dcde868fbdfad4, type: 3}
