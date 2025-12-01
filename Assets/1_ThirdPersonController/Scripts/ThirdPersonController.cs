@@ -167,7 +167,7 @@ namespace StarterAssets
             Interact();
             Attack();
             Lighting();
-            Skil();
+            Skill();
             Ult();
         }
 
@@ -437,15 +437,15 @@ namespace StarterAssets
             
         }
 
-        private void Skil()
+        private void Skill()
         {
-            if (_input.skil && _interactionManager != null)
+            if (_input.skill && _interactionManager != null)
             {
-                _animator.SetTrigger("Skil");
+                _animator.SetTrigger("Skill");
 
-                Debug.Log("skil");
-                _input.skil = true;
-                _input.skil = false;
+                Debug.Log("skill");
+                _input.skill = true;
+                _input.skill = false;
             }
         }
 
@@ -453,14 +453,14 @@ namespace StarterAssets
         {
             if (_input.ult && _interactionManager != null)
             {
-                _animator.SetBool("Ult", true);
-                Debug.Log("ult");
-                if (_input.ult && _animator.GetBool("Ult") == true)
+                if (_input.skill && _interactionManager != null)
                 {
-                    _animator.SetBool("Ult", false);
+                    _animator.SetTrigger("Ult");
+
+                    Debug.Log("Ult");
+                    _input.ult = true;
+                    _input.ult = false;
                 }
-                _input.ult = true;
-                _input.ult = false;
             }
         }
 
