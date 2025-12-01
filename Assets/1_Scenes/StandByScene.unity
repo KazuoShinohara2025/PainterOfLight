@@ -385,7 +385,7 @@ GameObject:
   - component: {fileID: 49081615}
   - component: {fileID: 49081614}
   - component: {fileID: 49081613}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Double Door
   m_TagString: Door
   m_Icon: {fileID: 0}
@@ -965,6 +965,10 @@ PrefabInstance:
     - target: {fileID: 6200720779111275133, guid: 1083f87f08232f541942f4a22a00127e, type: 3}
       propertyPath: m_Name
       value: WoodChest
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200720779111275133, guid: 1083f87f08232f541942f4a22a00127e, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6200720779111275133, guid: 1083f87f08232f541942f4a22a00127e, type: 3}
       propertyPath: m_TagString
@@ -9351,6 +9355,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -4.1914597
       objectReference: {fileID: 0}
+    - target: {fileID: 3175085866095292734, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
+      propertyPath: characterStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: a1baba1f9dde2c74dab8fe8abf725a56, type: 2}
     - target: {fileID: 4836458360038609384, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
       propertyPath: m_Radius
       value: 0.25
@@ -9362,6 +9370,18 @@ PrefabInstance:
     - target: {fileID: 5079063802770949933, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5834030679739078687, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
+      propertyPath: detectionRadius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5834030679739078687, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
+      propertyPath: interactionRange
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5834030679739078687, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
+      propertyPath: interactableLayers.m_Bits
+      value: 128
       objectReference: {fileID: 0}
     - target: {fileID: 7629118878935016763, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11059,7 +11079,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemClickDetector
   interactionRange: 2
-  detectionCenter: {x: 0, y: 0, z: 0}
   detectionRadius: 0
   interactableLayers:
     serializedVersion: 2
@@ -11507,6 +11526,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4806161636788764281, guid: f6b0881f6e766a6478d441876725b128, type: 3}
+      propertyPath: characterStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: 293e178c23d055a42880b6e7cccb7ef7, type: 2}
     - target: {fileID: 5792947759552442074, guid: f6b0881f6e766a6478d441876725b128, type: 3}
       propertyPath: m_Radius
       value: 0.25
@@ -12048,6 +12071,10 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 4823346149682045202, guid: ff54617a69204f34ba128a344660798f, type: 3}
+      propertyPath: characterStatus
+      value: 
+      objectReference: {fileID: 11400000, guid: c0dcaca77671ceb408559d179f7bf759, type: 2}
     - target: {fileID: 6281789989877007012, guid: ff54617a69204f34ba128a344660798f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10.266352
@@ -13038,7 +13065,7 @@ MonoBehaviour:
   interact: 0
   attack: 0
   lighting: 0
-  skil: 0
+  skill: 0
   ult: 0
   analogMovement: 0
   cursorLocked: 1
@@ -14492,6 +14519,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterStatus: {fileID: 0}
   interactionRayOrigin: {fileID: 0}
   MoveSpeed: 2
   SprintSpeed: 5.335

@@ -14,7 +14,12 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        // 追加: ScriptableObjectの参照
+        [Header("ScriptableObject Data")]
+        public PlayerData characterStatus;
+
         [Header("Player")]
+
         [Header("Interaction")]
         public Transform interactionRayOrigin;
         private InteractionManager _interactionManager;
@@ -224,7 +229,7 @@ namespace StarterAssets
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float targetSpeed = _input.sprint ? characterStatus.moveSpeed : MoveSpeed;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 

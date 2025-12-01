@@ -70,7 +70,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Skil",
+                    "name": "Skill",
                     "type": "Button",
                     "id": "7882804d-574e-4e4b-9766-7e32bf8403cd",
                     "expectedControlType": "",
@@ -338,7 +338,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";KeyboardMouse",
-                    "action": "Skil",
+                    "action": "Skill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -349,7 +349,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",
-                    "action": "Skil",
+                    "action": "Skill",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -11,7 +11,7 @@ public class CharacterCombatController : MonoBehaviour
     [Header("Input Actions (Input System Assetからドラッグ)")]
     public InputActionReference attackInput; // Left Click
     public InputActionReference lightingInput; // Right Click
-    public InputActionReference skiIlnput;  // E Key
+    public InputActionReference skiIllnput;  // E Key
     public InputActionReference ultInput; // R Key
 
     [Header("VFX Prefabs (エフェクト)")]
