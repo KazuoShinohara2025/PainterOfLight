@@ -1,3 +1,4 @@
+using StarterAssets;
 using UnityEngine;
 
 public class PlayerManaManager : MonoBehaviour
@@ -14,6 +15,8 @@ public class PlayerManaManager : MonoBehaviour
     public GameObject magicSpherePrefab; // 球体のプレハブ
     public float spawnDistance = 2.0f;   // プレイヤーの前方どれくらいに出すか
 
+    private StarterAssetsInputs _input;
+
     void Start()
     {
         currentMana = characterStatus.maxMana;
@@ -22,7 +25,7 @@ public class PlayerManaManager : MonoBehaviour
     void Update()
     {
         // 右クリック (0=左, 1=右, 2=中)
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1)) 
         {
             TryCastMagic();
         }
@@ -50,7 +53,8 @@ public class PlayerManaManager : MonoBehaviour
         // マウスの位置に出したい場合は Raycast を使用しますが、今回はシンプルにプレイヤー位置とします
         Vector3 spawnPos = transform.position;
 
-        // プレハブを生成
-        Instantiate(magicSpherePrefab, spawnPos, Quaternion.identity);
+        // 【変更点】第4引数に 'transform' (このスクリプトがついているPlayer) を指定します
+        // これにより、生成された球体はPlayerの子オブジェクトになります
+        Instantiate(magicSpherePrefab, spawnPos, Quaternion.identity, transform);
     }
 }
