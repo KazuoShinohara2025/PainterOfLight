@@ -9422,11 +9422,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5834030679739078687, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
       propertyPath: detectionRadius
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 5834030679739078687, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
       propertyPath: interactionRange
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 5834030679739078687, guid: 6324f0ede8b77d148a94d75b2c15366d, type: 3}
       propertyPath: interactableLayers.m_Bits
@@ -10155,6 +10155,14 @@ PrefabInstance:
     - target: {fileID: 1085407659737015160, guid: 48f68f097e4d5934bbdf3567df2c02a2, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1488093512813416598, guid: 48f68f097e4d5934bbdf3567df2c02a2, type: 3}
+      propertyPath: detectionRadius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1488093512813416598, guid: 48f68f097e4d5934bbdf3567df2c02a2, type: 3}
+      propertyPath: interactionRange
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 2345322251031413102, guid: 48f68f097e4d5934bbdf3567df2c02a2, type: 3}
       propertyPath: m_Name
@@ -11567,6 +11575,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1278082132103758722, guid: f6b0881f6e766a6478d441876725b128, type: 3}
+      propertyPath: skillVFX
+      value: 
+      objectReference: {fileID: 2905666689437318915, guid: 4768141875174f91b87ba0d53922fcae, type: 3}
+    - target: {fileID: 1278082132103758722, guid: f6b0881f6e766a6478d441876725b128, type: 3}
+      propertyPath: skiIllnput
+      value: 
+      objectReference: {fileID: 495759431216799396, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+    - target: {fileID: 1278082132103758722, guid: f6b0881f6e766a6478d441876725b128, type: 3}
       propertyPath: characterStatus
       value: 
       objectReference: {fileID: 11400000, guid: 293e178c23d055a42880b6e7cccb7ef7, type: 2}
@@ -11584,6 +11600,14 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 293e178c23d055a42880b6e7cccb7ef7, type: 2}
     - target: {fileID: 5792947759552442074, guid: f6b0881f6e766a6478d441876725b128, type: 3}
       propertyPath: m_Radius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997540326471971726, guid: f6b0881f6e766a6478d441876725b128, type: 3}
+      propertyPath: detectionRadius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5997540326471971726, guid: f6b0881f6e766a6478d441876725b128, type: 3}
+      propertyPath: interactionRange
       value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 6770373490825798335, guid: f6b0881f6e766a6478d441876725b128, type: 3}
@@ -12168,13 +12192,29 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7257473908651725727, guid: ff54617a69204f34ba128a344660798f, type: 3}
+      propertyPath: skillVFX
+      value: 
+      objectReference: {fileID: 1636683727862901332, guid: 2d36eff419ba4e6eb7c815b0c184aa6a, type: 3}
+    - target: {fileID: 7257473908651725727, guid: ff54617a69204f34ba128a344660798f, type: 3}
       propertyPath: attackVFX
       value: 
       objectReference: {fileID: 1120748385873212720, guid: 0662bb649d218ab41a510ef91c11b2d4, type: 3}
     - target: {fileID: 7257473908651725727, guid: ff54617a69204f34ba128a344660798f, type: 3}
+      propertyPath: skiIllnput
+      value: 
+      objectReference: {fileID: 495759431216799396, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+    - target: {fileID: 7257473908651725727, guid: ff54617a69204f34ba128a344660798f, type: 3}
       propertyPath: characterStatus
       value: 
       objectReference: {fileID: 11400000, guid: c0dcaca77671ceb408559d179f7bf759, type: 2}
+    - target: {fileID: 8444612652104525490, guid: ff54617a69204f34ba128a344660798f, type: 3}
+      propertyPath: detectionRadius
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8444612652104525490, guid: ff54617a69204f34ba128a344660798f, type: 3}
+      propertyPath: interactionRange
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 8696732475279909042, guid: ff54617a69204f34ba128a344660798f, type: 3}
       propertyPath: m_Name
       value: Rose
