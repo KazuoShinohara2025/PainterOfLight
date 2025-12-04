@@ -3128,13 +3128,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e12a7c7e0878b64b8a20a3ce0b82765, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EvilController
-  enemyData: {fileID: 0}
+  enemyData: {fileID: 11400000, guid: 5aa5303dba8d532478870fdce8a34bab, type: 2}
   player: {fileID: 0}
-  agent: {fileID: 0}
-  animator: {fileID: 0}
+  agent: {fileID: 601280042}
+  animator: {fileID: 601280043}
   detectionRange: 10
-  attackRange: 2
-  attackCooldown: 1.5
+  attackRange: 1.5
+  attackCooldown: 3
 --- !u!195 &601280042
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -3157,6 +3157,11 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!95 &601280043 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 431171142333058342, guid: 9ea8cc3166e81af478a6fa55058a60e6, type: 3}
+  m_PrefabInstance: {fileID: 1571328160}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &603664939 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4284281026231544544, guid: d2670d0ea7d6e7f4cb7e6be1a5541d46, type: 3}
@@ -13503,7 +13508,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 1.51
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}

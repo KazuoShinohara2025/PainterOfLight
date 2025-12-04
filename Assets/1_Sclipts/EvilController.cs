@@ -14,8 +14,8 @@ public class EvilController : MonoBehaviour
 
     [Header("‹““®İ’è")]
     public float detectionRange = 10f;
-    public float attackRange = 2f;
-    public float attackCooldown = 1.5f;
+    public float attackRange = 1.5f;
+    public float attackCooldown = 3f;
 
     // “à•”•Ï”
     private float lastAttackTime;
