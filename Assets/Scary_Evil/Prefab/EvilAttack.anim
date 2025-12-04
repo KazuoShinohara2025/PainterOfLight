@@ -103436,7 +103436,14 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 1
-    functionName: AttackBehavior
+    functionName: EnableAttackCollider
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.2333333
+    functionName: DisableAttackCollider
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

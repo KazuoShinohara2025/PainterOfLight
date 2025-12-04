@@ -9,8 +9,8 @@ public class EnemyData : ScriptableObject
     //public Sprite enemyIcon;      // 敵のアイコン画像
 
     [Header("ステータス")]
-    public int maxHp;            // 最大体力
-    public int attackPower;      // 攻撃力
+    public float maxHp;            // 最大体力
+    public float attackPower;      // 攻撃力
     public float moveSpeed;      // 移動速度
 
     [Header("報酬")]

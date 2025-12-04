@@ -4,22 +4,26 @@ using UnityEngine.AI;
 public class EvilController : MonoBehaviour
 {
     [Header("データ設定")]
-    [Tooltip("作成したEvilDataアセットをここにセット")]
     public EnemyData enemyData;
 
     [Header("参照")]
     public Transform player;
     public NavMeshAgent agent;
-    public Animator animator; // 追加: アニメーター
+    public Animator animator;
+
+    // 追加: 武器の当たり判定用スクリプトへの参照
+    [Header("武器設定")]
+    [Tooltip("BoxColliderがついている武器/手のオブジェクト")]
+    public EvilWeapon weaponColliderScript;
+    private Collider weaponCollider; // そのコンポーネントの実体
 
     [Header("挙動設定")]
     public float detectionRange = 10f;
     public float attackRange = 1.5f;
     public float attackCooldown = 3f;
 
-    // 内部変数
     private float lastAttackTime;
-    private int currentHp;
+    private float currentHp;
     private bool isDead = false;
 
     void Start()
@@ -27,41 +31,60 @@ public class EvilController : MonoBehaviour
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponent<Animator>();
 
+        // プレイヤー検索処理（省略なしで記載）
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
 
+        // --- 武器のセットアップ ---
+        if (weaponColliderScript != null)
+        {
+            // BoxCollider本体を取得しておく
+            weaponCollider = weaponColliderScript.GetComponent<Collider>();
+            weaponCollider.enabled = false; // 最初は無効化
+        }
+
         // --- EnemyDataの反映 ---
         if (enemyData != null)
         {
-            agent.speed = enemyData.moveSpeed; // 移動速度を反映
-            currentHp = enemyData.maxHp;       // HPを反映
+            agent.speed = enemyData.moveSpeed;
+            currentHp = enemyData.maxHp;
+
+            // 追加: 武器に攻撃力を渡す
+            if (weaponColliderScript != null)
+            {
+                weaponColliderScript.damagePower = enemyData.attackPower;
+            }
         }
     }
 
     void Update()
     {
+        // ... (Updateの中身は前回と同じなので省略。AttackBehaviorなどは変更なし) ...
         if (isDead || player == null) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        // アニメーション用に速度をAnimatorへ送る
-        // agent.velocity.magnitude で現在の移動速度がわかる
         animator.SetFloat("Speed", agent.velocity.magnitude);
 
-        if (distanceToPlayer <= attackRange)
+        if (distanceToPlayer <= attackRange) AttackBehavior();
+        else if (distanceToPlayer <= detectionRange) ChaseBehavior();
+        else IdleBehavior();
+    }
+
+    // ... (ChaseBehavior, AttackBehavior, IdleBehavior は前回と同じ) ...
+
+    void AttackBehavior()
+    {
+        agent.isStopped = true;
+        transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+
+        if (Time.time - lastAttackTime > attackCooldown)
         {
-            AttackBehavior();
-        }
-        else if (distanceToPlayer <= detectionRange)
-        {
-            ChaseBehavior();
-        }
-        else
-        {
-            IdleBehavior();
+            lastAttackTime = Time.time;
+            animator.SetTrigger("Attack");
+            // ここでの直接攻撃処理は不要。アニメーションイベントに任せる。
         }
     }
 
@@ -71,66 +94,31 @@ public class EvilController : MonoBehaviour
         agent.SetDestination(player.position);
     }
 
-    void AttackBehavior()
-    {
-        agent.isStopped = true;
-
-        // 常にプレイヤーの方を向く
-        Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0; // 高さは無視
-        if (direction != Vector3.zero)
-        {
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-        }
-
-        // クールダウン経過していれば攻撃
-        if (Time.time - lastAttackTime > attackCooldown)
-        {
-            lastAttackTime = Time.time;
-
-            // アニメーションのTriggerをオンにする
-            animator.SetTrigger("Attack");
-
-            // 注意: ここでダメージ処理は書きません。「振った瞬間」に行うためです。
-        }
-    }
-
     void IdleBehavior()
     {
         agent.isStopped = true;
     }
 
-    // --- ここが重要: アニメーションイベントから呼ばれる関数 ---
-    // Animationウィンドウで設定したイベント名と同じにする
-    public void OnAttackHit()
+
+    // ========================================================
+    //  ここを変更: アニメーションイベント用関数 (2つ用意します)
+    // ========================================================
+
+    // イベント1: 攻撃の「振りかぶり」が終わって、攻撃判定を発生させる瞬間
+    public void EnableAttackCollider()
     {
-        // 攻撃判定を行う（前方への球体判定など）
-        // ここでは簡易的に「距離と角度」または「位置」で再確認
-        if (player == null) return;
-
-        float distance = Vector3.Distance(transform.position, player.position);
-
-        // アニメーション再生中にプレイヤーが逃げているかもしれないので、
-        // 実際に攻撃が当たる距離にいるか最終チェック
-        if (distance <= attackRange + 0.5f) // 少し余裕を持たせる
+        if (weaponCollider != null)
         {
-            // プレイヤーのスクリプトを取得してダメージを与える
-            PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-            if (playerHealth != null && enemyData != null)
-            {
-                // EnemyDataの攻撃力を使用
-                playerHealth.TakeDamage(enemyData.attackPower);
-            }
+            weaponCollider.enabled = true;
         }
     }
 
-    // デバッグ表示
-    void OnDrawGizmosSelected()
+    // イベント2: 攻撃の「振りぬき」が終わって、攻撃判定を消す瞬間
+    public void DisableAttackCollider()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = false;
+        }
     }
 }

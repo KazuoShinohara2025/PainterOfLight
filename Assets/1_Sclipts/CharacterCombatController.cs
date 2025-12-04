@@ -8,6 +8,9 @@ public class CharacterCombatController : MonoBehaviour
     // ここでLily、Rose、TatianaそれぞれのScriptableObjectを割り当てる
     public PlayerData characterStatus;
 
+    [Header("攻撃判定")]
+    public Collider weaponCollider; // 武器のBoxColliderをアタッチ
+
     [Header("Input Actions (Input System Assetからドラッグ)")]
     public InputActionReference attackInput; // Left Click
     public InputActionReference lightingInput; // Right Click
@@ -149,5 +152,23 @@ public class CharacterCombatController : MonoBehaviour
         // デバッグ出力
         Debug.Log($"{characterStatus.Name} の攻撃ダメージ: {finalDamage}");
         // 実際にはここで当たり判定の処理を行い、敵にダメージを与える
+    }
+
+    // アニメーションイベント: 攻撃判定 開始
+    public void EnableAttackCollider()
+    {
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = true;
+        }
+    }
+
+    // アニメーションイベント: 攻撃判定 終了
+    public void DisableAttackCollider()
+    {
+        if (weaponCollider != null)
+        {
+            weaponCollider.enabled = false;
+        }
     }
 }

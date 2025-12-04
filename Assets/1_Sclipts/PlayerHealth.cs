@@ -2,24 +2,49 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHp = 100;
-    private int currentHp;
+    [Header("データ設定")]
+    public PlayerData playerData; // 作成したPlayerDataアセットをセット
+
+    // ランタイム（ゲーム中）の変動値
+    private float currentHp;
+    private float currentMana;
 
     void Start()
     {
-        currentHp = maxHp;
+        if (playerData != null)
+        {
+            // PlayerDataから初期値を読み込む
+            currentHp = playerData.maxHp;
+            currentMana = playerData.maxMana;
+        }
+        else
+        {
+            Debug.LogError("PlayerDataがセットされていません！");
+            currentHp = 100f;
+        }
     }
 
-    // ダメージを受ける関数（敵から呼ばれる）
-    public void TakeDamage(int damage)
+    // ダメージを受ける処理（敵の武器から呼ばれる）
+    public void TakeDamage(float damage)
     {
+        // 防御力の計算を入れる場合（簡易計算: ダメージ - 防御力）
+        // float finalDamage = Mathf.Max(0, damage - playerData.baseDefense);
+        // currentHp -= finalDamage;
+
+        // 今回はシンプルにそのままダメージ
         currentHp -= damage;
-        Debug.Log($"プレイヤーは {damage} のダメージを受けた！ 残りHP: {currentHp}");
+
+        Debug.Log($"Player HP: {currentHp} / {playerData.maxHp}");
 
         if (currentHp <= 0)
         {
-            Debug.Log("Game Over...");
-            // ここに死亡処理
+            Die();
         }
+    }
+
+    void Die()
+    {
+        Debug.Log("Player Died...");
+        // ゲームオーバー処理など
     }
 }
