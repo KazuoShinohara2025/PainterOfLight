@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6296638086931266978}
   - component: {fileID: 2178673288301956606}
   - component: {fileID: 4669509512097733951}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shard_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4927,7 +4927,7 @@ GameObject:
   - component: {fileID: -2571393849350435556}
   - component: {fileID: 5049372242122742644}
   - component: {fileID: 5916015883781228807}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: VFX_Rose_Skill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9964,7 +9964,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5392870119286334414}
-  m_Layer: 3
+  m_Layer: 10
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9997,7 +9997,7 @@ GameObject:
   - component: {fileID: 4805092819292393390}
   - component: {fileID: 9204776650647129525}
   - component: {fileID: 8666947834039273211}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14891,7 +14891,7 @@ GameObject:
   - component: {fileID: 672549535201044026}
   - component: {fileID: 934314443738612445}
   - component: {fileID: 7888151065738612474}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19798,7 +19798,7 @@ GameObject:
   - component: {fileID: 5827683019507551843}
   - component: {fileID: 7109626393980671312}
   - component: {fileID: 2482463524567488663}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24710,7 +24710,7 @@ GameObject:
   - component: {fileID: 2844993049916541268}
   - component: {fileID: 8238573066615930050}
   - component: {fileID: 2281461359394699788}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hearth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29649,7 +29649,7 @@ GameObject:
   - component: {fileID: 6265680991740013158}
   - component: {fileID: 7479487935844054033}
   - component: {fileID: 4220769473114498519}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mesh_Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34570,7 +34570,7 @@ GameObject:
   - component: {fileID: 1235106143908416859}
   - component: {fileID: 5170659038403284784}
   - component: {fileID: 598474705917270869}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ray_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39465,7 +39465,7 @@ GameObject:
   - component: {fileID: 1369757798947752098}
   - component: {fileID: 1956189958648188734}
   - component: {fileID: 3436634046376223289}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle_Hang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44377,7 +44377,7 @@ GameObject:
   - component: {fileID: 1835676665642653191}
   - component: {fileID: 1678950861605909941}
   - component: {fileID: 1290139556619975042}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mesh_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}

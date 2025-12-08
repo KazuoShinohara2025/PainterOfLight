@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8264493038502216918}
   - component: {fileID: 6679066302395461324}
   - component: {fileID: 2795443124929008799}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: VFX_Lily_Ult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,7 +111,7 @@ GameObject:
   - component: {fileID: 3243535437897168256}
   - component: {fileID: 2766907546735515951}
   - component: {fileID: 4531267007923209599}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5024,7 +5024,7 @@ GameObject:
   - component: {fileID: 8074013541946594172}
   - component: {fileID: 6288642808050560838}
   - component: {fileID: 2375245878254179995}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Start_Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9936,7 +9936,7 @@ GameObject:
   - component: {fileID: 1605146280378121464}
   - component: {fileID: 1565525668989679370}
   - component: {fileID: 650520246818794643}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle_Hang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14848,7 +14848,7 @@ GameObject:
   - component: {fileID: 1050636433488760779}
   - component: {fileID: 4075172807876555509}
   - component: {fileID: 8146144752625033859}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19760,7 +19760,7 @@ GameObject:
   - component: {fileID: 3492933307755025155}
   - component: {fileID: 7780109684859950474}
   - component: {fileID: 7207951816539752500}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hearth
   m_TagString: Untagged
   m_Icon: {fileID: 0}

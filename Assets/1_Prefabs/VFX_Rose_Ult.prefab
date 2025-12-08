@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1732232110120038899}
   - component: {fileID: 735632981807191897}
   - component: {fileID: 7894882124306223198}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mesh_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4905,7 +4905,7 @@ GameObject:
   - component: {fileID: 4303079510082962255}
   - component: {fileID: 1733690083149280345}
   - component: {fileID: 8352490069444624383}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Mesh_Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9810,7 +9810,8 @@ GameObject:
   - component: {fileID: 7437271251583476896}
   - component: {fileID: 4863989176027534304}
   - component: {fileID: -1034341035084280624}
-  m_Layer: 0
+  - component: {fileID: 7340444821412103076}
+  m_Layer: 10
   m_Name: VFX_Rose_Ult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14789,6 +14790,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageEffect
   damageAmount: 0
+--- !u!54 &7340444821412103076
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2552903038563291788}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &2682139409116065330
 GameObject:
   m_ObjectHideFlags: 0
@@ -14800,7 +14828,7 @@ GameObject:
   - component: {fileID: 8120776092124322098}
   - component: {fileID: 2029343496050397537}
   - component: {fileID: 529124532743507364}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19712,7 +19740,7 @@ GameObject:
   - component: {fileID: 6347013607112263765}
   - component: {fileID: 1463355910567798028}
   - component: {fileID: 9025424209390300514}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ray_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24605,7 +24633,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6061666187371603373}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24638,7 +24666,7 @@ GameObject:
   - component: {fileID: 9101156764478370586}
   - component: {fileID: 2492065761744497201}
   - component: {fileID: 5008730976697599296}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29532,7 +29560,7 @@ GameObject:
   - component: {fileID: 3747330533634230502}
   - component: {fileID: 1705930445118786947}
   - component: {fileID: 3306422560673546734}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34439,7 +34467,7 @@ GameObject:
   - component: {fileID: 3893473106608489197}
   - component: {fileID: 4620212698542902967}
   - component: {fileID: 2175819020824157726}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle_Hang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39351,7 +39379,7 @@ GameObject:
   - component: {fileID: 6118949486714441997}
   - component: {fileID: 2805390223584293775}
   - component: {fileID: 8570472099872570653}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Shard_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44263,7 +44291,7 @@ GameObject:
   - component: {fileID: 3164513995221157442}
   - component: {fileID: 8629435630574269066}
   - component: {fileID: 4830768792798581354}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hearth
   m_TagString: Untagged
   m_Icon: {fileID: 0}

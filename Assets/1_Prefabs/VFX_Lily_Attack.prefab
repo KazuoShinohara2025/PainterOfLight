@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8916625951388869935}
   - component: {fileID: 7094436787320143203}
   - component: {fileID: 2783434552954648509}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4964,7 +4964,7 @@ GameObject:
   - component: {fileID: 2567711115034263159}
   - component: {fileID: 8420362854000992505}
   - component: {fileID: 2968385774737720245}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle_Hang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9876,7 +9876,7 @@ GameObject:
   - component: {fileID: 6406834313090615709}
   - component: {fileID: 8638754282025675262}
   - component: {fileID: 5716457880808593521}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: VFX_Shield_Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14768,7 +14768,7 @@ GameObject:
   - component: {fileID: 707182932204241863}
   - component: {fileID: 4003930167686185536}
   - component: {fileID: 5199448238383165687}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: VFX_Lily_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}

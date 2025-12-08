@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5473982417143957636}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 3956830386477265148}
   - component: {fileID: 2419080901613580169}
   - component: {fileID: 2480845040196864714}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4951,7 +4951,8 @@ GameObject:
   - component: {fileID: 1768360877758259329}
   - component: {fileID: 442871820326893306}
   - component: {fileID: -8406128708995462976}
-  m_Layer: 0
+  - component: {fileID: 641210526157383195}
+  m_Layer: 10
   m_Name: VFX_Tatiana_Ult
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9905,6 +9906,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DamageEffect
   damageAmount: 0
+--- !u!114 &641210526157383195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3300406336262876018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19a37d220275e1c4fbd80d6c79bdcfff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParticleHitReceiver
 --- !u!1 &3461728670547204042
 GameObject:
   m_ObjectHideFlags: 0
@@ -9916,7 +9929,7 @@ GameObject:
   - component: {fileID: 3018743489671078485}
   - component: {fileID: 6741773310951421287}
   - component: {fileID: 6324971629642419208}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15018,7 +15031,7 @@ GameObject:
   - component: {fileID: 4272232825889221811}
   - component: {fileID: 2995830933733302907}
   - component: {fileID: 9170849574631017014}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Trail_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19930,7 +19943,7 @@ GameObject:
   - component: {fileID: 4966252482039821248}
   - component: {fileID: 7183787392100687119}
   - component: {fileID: 8721216796232657963}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Electricity_Out
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24843,7 +24856,7 @@ GameObject:
   - component: {fileID: 7800343818595923383}
   - component: {fileID: 5335722113135426602}
   - component: {fileID: 1879719158443125541}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Start_Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}

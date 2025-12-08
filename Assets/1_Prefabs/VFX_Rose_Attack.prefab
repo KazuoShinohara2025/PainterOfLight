@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 998870129925161606}
   - component: {fileID: 697930288455798023}
   - component: {fileID: 2398319873796757930}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ice (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4905,7 +4905,7 @@ GameObject:
   - component: {fileID: -4251687963906995579}
   - component: {fileID: 6807544977055013987}
   - component: {fileID: 6871088703735171011}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: VFX_Rose_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9809,7 +9809,7 @@ GameObject:
   - component: {fileID: 1187423773712245413}
   - component: {fileID: 1712300515488544213}
   - component: {fileID: 7082698912605533700}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14715,7 +14715,7 @@ GameObject:
   - component: {fileID: 1799425546416448956}
   - component: {fileID: 5160880829553235406}
   - component: {fileID: 270847795206520035}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19621,7 +19621,7 @@ GameObject:
   - component: {fileID: 3099863089365980105}
   - component: {fileID: 6773856771802482879}
   - component: {fileID: 4524357828693490738}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ice (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24512,7 +24512,7 @@ GameObject:
   - component: {fileID: 2910222428066390119}
   - component: {fileID: 6862766776641633626}
   - component: {fileID: 7763816385998704214}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29419,7 +29419,7 @@ GameObject:
   - component: {fileID: 8757379696099007509}
   - component: {fileID: 4824865788424283828}
   - component: {fileID: 3852779090249622308}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34325,7 +34325,7 @@ GameObject:
   - component: {fileID: 8255416760548437069}
   - component: {fileID: 24819395973956533}
   - component: {fileID: 861747889028491220}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ice (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39216,7 +39216,7 @@ GameObject:
   - component: {fileID: 4114218210592727383}
   - component: {fileID: 5038894431333123596}
   - component: {fileID: 4375221047866175108}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44122,7 +44122,7 @@ GameObject:
   - component: {fileID: 4397595948843301130}
   - component: {fileID: 7865872370769298803}
   - component: {fileID: 8859550314508065903}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ice (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49013,7 +49013,7 @@ GameObject:
   - component: {fileID: 3062537947581165534}
   - component: {fileID: 7554468565106414957}
   - component: {fileID: 5926121649591042552}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ice (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53904,7 +53904,7 @@ GameObject:
   - component: {fileID: 4448209745720712956}
   - component: {fileID: 7788800418316320076}
   - component: {fileID: 6111049190974476359}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58810,7 +58810,7 @@ GameObject:
   - component: {fileID: 1015092204108171158}
   - component: {fileID: 8624842296208859446}
   - component: {fileID: 91791529262080545}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ice (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63701,7 +63701,7 @@ GameObject:
   - component: {fileID: 3505792700982777439}
   - component: {fileID: 5414211011332295472}
   - component: {fileID: 3262977189883304239}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SmokeBig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68607,7 +68607,7 @@ GameObject:
   - component: {fileID: 3994940147915977496}
   - component: {fileID: 8667816012274845667}
   - component: {fileID: 455565103037427565}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: IceSparks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
