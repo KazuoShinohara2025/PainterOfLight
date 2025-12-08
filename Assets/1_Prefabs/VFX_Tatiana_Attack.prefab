@@ -10143,6 +10143,7 @@ GameObject:
   - component: {fileID: 4699098824790600081}
   - component: {fileID: 8759527148842266820}
   - component: {fileID: 6812325070437650991}
+  - component: {fileID: -8423959985110705067}
   m_Layer: 10
   m_Name: VFX_Tatiana_Attack
   m_TagString: Untagged
@@ -15070,6 +15071,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forceFieldTarget: {fileID: 0}
+--- !u!114 &-8423959985110705067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2379924841332722358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b53e195a44e690e42aa692ff0de3ba63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageEffect
+  damageAmount: 0
 --- !u!1 &3952839176514701587
 GameObject:
   m_ObjectHideFlags: 0

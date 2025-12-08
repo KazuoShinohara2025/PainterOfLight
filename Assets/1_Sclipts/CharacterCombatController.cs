@@ -5,7 +5,6 @@ using UnityEngine.InputSystem; // Input Systemの名前空間
 public class CharacterCombatController : MonoBehaviour
 {
     [Header("ScriptableObject Data")]
-    // ここでLily、Rose、TatianaそれぞれのScriptableObjectを割り当てる
     public PlayerData characterStatus;
 
     [Header("攻撃判定")]
@@ -17,7 +16,7 @@ public class CharacterCombatController : MonoBehaviour
     public InputActionReference skiIllnput;  // E Key
     public InputActionReference ultInput; // R Key
 
-    [Header("VFX Prefabs (エフェクト)")]
+    [Header("VFX Prefabs (DamageEffectスクリプトがついていること)")]
     public GameObject attackVFX;
     public GameObject lightingVFX;
     public GameObject skillVFX;
@@ -30,107 +29,163 @@ public class CharacterCombatController : MonoBehaviour
     public Transform ultimateSpawnPoint; // アルティメット用（例：足元）
 
     private Animator animator;
+    private PlayerInput playerInput; // 入力制御コンポーネント
+
+    // --- 追加: ステータス管理用 ---
+    private float currentHp;
+    private bool isDead = false;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        playerInput = GetComponent<PlayerInput>(); // PlayerInputを取得
     }
-    
+
+    private void Start()
+    {
+        // HPの初期化
+        if (characterStatus != null)
+        {
+            currentHp = characterStatus.maxHp;
+        }
+    }
 
     // --- アクション処理 ---
 
     public void OnAttack(InputValue value)
     {
-        // ボタンが押された時だけ実行する判定
+        if (isDead) return; // 死亡時は操作不可
+
         if (value.isPressed)
         {
-            // アニメーションのトリガー名にScriptableObjectの値を反映
             animator.SetTrigger(characterStatus.attackAnimationTrigger);
-            // 当たり判定やダメージ計算の準備
-            CalculateDamage(characterStatus.baseAttack, characterStatus.attackDamageMultiplier);
+            // ※ここではアニメーション再生のみ行い、実際のダメージ生成はAnimation Eventで行います
         }
     }
+
     public void OnLighting(InputValue value)
     {
+        if (isDead) return;
+
         if (value.isPressed)
         {
-            // アニメーションのトリガー名にScriptableObjectの値を反映
             animator.SetTrigger(characterStatus.lightingAnimationTrigger);
-            // 当たり判定やダメージ計算の準備
-            CalculateDamage(characterStatus.lightingRange, characterStatus.lightingRangeMultiplier);
         }
     }
+
     public void OnSkill(InputValue value)
     {
+        if (isDead) return;
+
         if (value.isPressed)
         {
-            // アニメーションのトリガー名にScriptableObjectの値を反映
             animator.SetTrigger(characterStatus.skillAnimationTrigger);
-            // 当たり判定やダメージ計算の準備
-            CalculateDamage(characterStatus.baseAttack, characterStatus.skillDamageMultiplier);
         }
     }
 
     public void OnUltimate(InputValue value)
     {
+        if (isDead) return;
+
         if (value.isPressed)
         {
-            // アニメーションのトリガー名にScriptableObjectの値を反映
             animator.SetTrigger(characterStatus.ultAnimationTrigger);
-            // 当たり判定やダメージ計算の準備
-            CalculateDamage(characterStatus.baseAttack, characterStatus.ultDamageMultiplier);
         }
     }
 
     // --- Animation Eventから呼ばれる関数 ---
+    // ここでダメージ計算を行い、VFXに渡します
 
     public void TriggerAttackVFX()
     {
-        // 攻撃用エフェクトを、攻撃用の場所から出す
-        SpawnVFX(attackVFX, attackSpawnPoint);
+        // ダメージ計算
+        float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.attackDamageMultiplier);
+        // エフェクト生成とダメージ渡し
+        SpawnVFX(attackVFX, attackSpawnPoint, damage);
     }
 
     public void TriggerLightingVFX()
     {
-        // 攻撃用エフェクトを、攻撃用の場所から出す
-        SpawnVFX(lightingVFX, lightingSpawnPoint);
+        float damage = CalculateDamage(characterStatus.lightingRange, characterStatus.lightingRangeMultiplier);
+        SpawnVFX(lightingVFX, lightingSpawnPoint, damage);
     }
 
     public void TriggerSkillVFX()
     {
-        // スキル用エフェクトを、スキル用の場所から出す
-        SpawnVFX(skillVFX, skillSpawnPoint);
+        float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.skillDamageMultiplier);
+        SpawnVFX(skillVFX, skillSpawnPoint, damage);
     }
 
     public void TriggerUltimateVFX()
     {
-        // アルティメット用エフェクトを、アルティメット用の場所から出す
-        SpawnVFX(ultVFX, ultimateSpawnPoint);
+        float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.ultDamageMultiplier);
+        SpawnVFX(ultVFX, ultimateSpawnPoint, damage);
     }
 
     // --- 共通生成処理 ---
-    // 引数に spawnPoint (Transform) を追加しました
-    private void SpawnVFX(GameObject vfxPrefab, Transform spawnPoint)
+    // 引数に damage を追加しました
+    private void SpawnVFX(GameObject vfxPrefab, Transform spawnPoint, float damageValue)
     {
         if (vfxPrefab != null)
         {
-            // もしInspectorで場所が設定されていなければ、自分の位置(足元)を代用する安全策
             Transform targetTransform = spawnPoint != null ? spawnPoint : transform;
 
             GameObject vfxObj = Instantiate(vfxPrefab, targetTransform.position, targetTransform.rotation);
+
+            // --- 追加: DamageEffectスクリプトにダメージ値を渡す処理 ---
+            DamageEffect effectScript = vfxObj.GetComponent<DamageEffect>();
+            if (effectScript != null)
+            {
+                effectScript.damageAmount = damageValue;
+            }
+
             Destroy(vfxObj, 3.0f);
         }
     }
-    // --- 攻撃力を反映させたダメージ計算（例） ---
-    void CalculateDamage(float baseAttack, float multiplier)
+
+    // --- 攻撃力を計算して値を返す関数に変更 ---
+    float CalculateDamage(float baseVal, float multiplier)
     {
-        float finalDamage = baseAttack * multiplier;
-        // デバッグ出力
+        float finalDamage = baseVal * multiplier;
         Debug.Log($"{characterStatus.Name} の攻撃ダメージ: {finalDamage}");
-        // 実際にはここで当たり判定の処理を行い、敵にダメージを与える
+        return finalDamage;
     }
 
-    // アニメーションイベント: 攻撃判定 開始
+    // --- 追加: プレイヤーの被ダメージ処理 ---
+    public void PlayerTakeDamage(float damage)
+    {
+        if (isDead) return;
+
+        currentHp -= damage;
+        Debug.Log($"Player HP: {currentHp}");
+
+        // HPが0以下になったら死亡
+        if (currentHp <= 0)
+        {
+            PlayerDie();
+        }
+    }
+
+    // --- 追加: 死亡処理 ---
+    private void PlayerDie()
+    {
+        isDead = true;
+
+        // 入力を無効化（移動や攻撃ができなくなる）
+        if (playerInput != null)
+        {
+            playerInput.DeactivateInput();
+        }
+
+        // 死亡アニメーション再生
+        // Animator Controllerに "Die" というTriggerを作成してください
+        animator.SetTrigger("Die");
+
+        Debug.Log("Player Died");
+    }
+
+    // --- コライダー制御 (既存のまま) ---
+
     public void EnableAttackCollider()
     {
         if (weaponCollider != null)
@@ -139,7 +194,6 @@ public class CharacterCombatController : MonoBehaviour
         }
     }
 
-    // アニメーションイベント: 攻撃判定 終了
     public void DisableAttackCollider()
     {
         if (weaponCollider != null)
