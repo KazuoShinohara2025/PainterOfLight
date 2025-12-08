@@ -23,8 +23,11 @@ public class CharacterCombatController : MonoBehaviour
     public GameObject skillVFX;
     public GameObject ultVFX;
 
-    [Header("Settings")]
-    public Transform vfxSpawnPoint; // エフェクトが出る場所（手元や武器の先など）
+    [Header("VFX Spawn Points (発生位置)")]
+    public Transform attackSpawnPoint;   // 通常攻撃用（例：剣先）
+    public Transform lightingSpawnPoint; // ライティング用（例：手元）
+    public Transform skillSpawnPoint;    // スキル用（例：左手、胸元）
+    public Transform ultimateSpawnPoint; // アルティメット用（例：足元）
 
     private Animator animator;
 
@@ -32,41 +35,7 @@ public class CharacterCombatController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
-    /*
-    private void OnEnable()
-    {
-        // アクションの有効化とイベント登録
-        if (attackInput != null)
-        {
-            attackInput.action.Enable();
-            attackInput.action.performed += OnAttack;
-        }
-        if (lightingInput != null)
-        {
-            lightingInput.action.Enable();
-            lightingInput.action.performed += OnLighting;
-        }
-        if (skiInput != null)
-        {
-            skiInput.action.Enable();
-            skiInput.action.performed += OnSkil;
-        }
-        if (ultInput != null)
-        {
-            ultInput.action.Enable();
-            ultInput.action.performed += OnUlt;
-        }
-    }
-
-    private void OnDisable()
-    {
-        // イベント解除（メモリリーク防止）
-        if (attackInput != null) attackInput.action.performed -= OnAttack;
-        if (lightingInput != null) lightingInput.action.performed -= OnLighting;
-        if (skiInput != null) skiInput.action.performed -= OnSkil;
-        if (ultInput != null) ultInput.action.performed -= OnUlt;
-    }
-    */
+    
 
     // --- アクション処理 ---
 
@@ -113,36 +82,43 @@ public class CharacterCombatController : MonoBehaviour
         }
     }
 
-    // --- アニメーションイベントから呼ばれる関数 (Animation Event) ---
-    // これらの関数をAnimationウィンドウで指定します
-    // ※ Animation Eventから呼ぶためには public である必要があります
+    // --- Animation Eventから呼ばれる関数 ---
 
     public void TriggerAttackVFX()
     {
-        SpawnVFX(attackVFX);
+        // 攻撃用エフェクトを、攻撃用の場所から出す
+        SpawnVFX(attackVFX, attackSpawnPoint);
     }
+
     public void TriggerLightingVFX()
     {
-        SpawnVFX(lightingVFX);
+        // 攻撃用エフェクトを、攻撃用の場所から出す
+        SpawnVFX(lightingVFX, lightingSpawnPoint);
     }
 
     public void TriggerSkillVFX()
     {
-        SpawnVFX(skillVFX);
+        // スキル用エフェクトを、スキル用の場所から出す
+        SpawnVFX(skillVFX, skillSpawnPoint);
     }
 
     public void TriggerUltimateVFX()
     {
-        SpawnVFX(ultVFX);
+        // アルティメット用エフェクトを、アルティメット用の場所から出す
+        SpawnVFX(ultVFX, ultimateSpawnPoint);
     }
 
-    // --- 共通処理 ---
-    private void SpawnVFX(GameObject vfxPrefab)
+    // --- 共通生成処理 ---
+    // 引数に spawnPoint (Transform) を追加しました
+    private void SpawnVFX(GameObject vfxPrefab, Transform spawnPoint)
     {
-        if (vfxPrefab != null && vfxSpawnPoint != null)
+        if (vfxPrefab != null)
         {
-            GameObject vfxObj = Instantiate(vfxPrefab, vfxSpawnPoint.position, transform.rotation);
-            Destroy(vfxObj, 1.0f);
+            // もしInspectorで場所が設定されていなければ、自分の位置(足元)を代用する安全策
+            Transform targetTransform = spawnPoint != null ? spawnPoint : transform;
+
+            GameObject vfxObj = Instantiate(vfxPrefab, targetTransform.position, targetTransform.rotation);
+            Destroy(vfxObj, 3.0f);
         }
     }
     // --- 攻撃力を反映させたダメージ計算（例） ---

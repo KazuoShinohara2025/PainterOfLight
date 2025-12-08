@@ -25,6 +25,8 @@ public class EvilController : MonoBehaviour
     private float lastAttackTime;
     private float currentHp;
     private bool isDead = false;
+    // --- 追加: 攻撃中かどうかを判定するフラグ ---
+    private bool isAttacking = false;
 
     void Start()
     {
@@ -62,29 +64,58 @@ public class EvilController : MonoBehaviour
 
     void Update()
     {
-        // ... (Updateの中身は前回と同じなので省略。AttackBehaviorなどは変更なし) ...
         if (isDead || player == null) return;
 
+        // --- 追加: 攻撃中は移動も回転も更新せず、ここで処理を止める ---
+        if (isAttacking)
+        {
+            agent.isStopped = true;       // NavMeshの移動停止
+            agent.velocity = Vector3.zero; // 慣性も消す
+            return; // ここでUpdateを抜ける（これより下の行は実行されない）
+        }
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // --- 変更: 移動速度のアニメーション反映 ---
+        // NavMeshAgentの現在の速度をAnimatorに渡す
         animator.SetFloat("Speed", agent.velocity.magnitude);
 
-        if (distanceToPlayer <= attackRange) AttackBehavior();
-        else if (distanceToPlayer <= detectionRange) ChaseBehavior();
-        else IdleBehavior();
+        if (distanceToPlayer <= attackRange)
+        {
+            AttackBehavior();
+        }
+        else if (distanceToPlayer <= detectionRange)
+        {
+            ChaseBehavior();
+        }
+        else
+        {
+            IdleBehavior();
+        }
+
     }
 
-    // ... (ChaseBehavior, AttackBehavior, IdleBehavior は前回と同じ) ...
 
     void AttackBehavior()
     {
-        agent.isStopped = true;
-        transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
-
+        // クールダウンチェック
         if (Time.time - lastAttackTime > attackCooldown)
         {
+            // --- 変更: 攻撃開始処理 ---
             lastAttackTime = Time.time;
+            isAttacking = true; // フラグを立てる（これでUpdate内の移動処理が止まる）
+
+            // 攻撃の瞬間だけプレイヤーの方を向く（攻撃中は回転もしないようにするためここで向く）
+            transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+
             animator.SetTrigger("Attack");
-            // ここでの直接攻撃処理は不要。アニメーションイベントに任せる。
+        }
+        else
+        {
+            // クールダウン中は棒立ちさせず、睨み合うなどの処理を入れるならここ
+            // 今回はとりあえず停止
+            agent.isStopped = true;
+            animator.SetFloat("Speed", 0);
         }
     }
 
@@ -97,6 +128,12 @@ public class EvilController : MonoBehaviour
     void IdleBehavior()
     {
         agent.isStopped = true;
+    }
+
+    public void OnAttackEnd()
+    {
+        isAttacking = false;
+        agent.isStopped = false;
     }
 
 
