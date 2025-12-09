@@ -11,7 +11,7 @@ public class NPC : MonoBehaviour, IInteractable
         animator = GetComponent<Animator>();
     }
 
-    public void Interact()
+    public void Interact(GameObject player)
     {
         ToggleTalk();
     }

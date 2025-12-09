@@ -25,7 +25,7 @@ public class EvilController : MonoBehaviour
     private float currentHp;
     private bool isDead = false;
     private bool isAttacking = false;
-    private CapsuleCollider myCollider; // 自身のコライダー（死亡時に消すため）
+    private CapsuleCollider myCollider;
 
     void Start()
     {
@@ -33,33 +33,70 @@ public class EvilController : MonoBehaviour
         if (animator == null) animator = GetComponent<Animator>();
         myCollider = GetComponent<CapsuleCollider>();
 
+        // プレイヤーの検索
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
 
+        // 武器コライダーのセットアップ
         if (weaponColliderScript != null)
         {
             weaponCollider = weaponColliderScript.GetComponent<Collider>();
             weaponCollider.enabled = false;
         }
 
+        // ステータス反映
         if (enemyData != null)
         {
             agent.speed = enemyData.moveSpeed;
             currentHp = enemyData.maxHp;
 
+            // 武器に攻撃力を渡す
             if (weaponColliderScript != null)
             {
                 weaponColliderScript.damagePower = enemyData.attackPower;
+            }
+        }
+
+        // --- デバッグ用ログ追加 ---
+        if (enemyData != null)
+        {
+            Debug.Log($"[Check] EnemyData found. AttackPower: {enemyData.attackPower}");
+        }
+        else
+        {
+            Debug.LogError("[Check] EnemyData is NULL!");
+        }
+
+        if (weaponColliderScript != null)
+        {
+            Debug.Log($"[Check] WeaponScript found on: {weaponColliderScript.name}");
+        }
+        else
+        {
+            Debug.LogError("[Check] WeaponColliderScript is NULL! Inspectorで設定してください！");
+        }
+        // -------------------------
+
+        // 既存のステータス反映処理
+        if (enemyData != null)
+        {
+            agent.speed = enemyData.moveSpeed;
+            // currentHp = enemyData.maxHp; // 重複していたので前回削除済みなら消す
+
+            // 武器に攻撃力を渡す（ここが重要）
+            if (weaponColliderScript != null)
+            {
+                weaponColliderScript.damagePower = enemyData.attackPower;
+                Debug.Log($"[Check] Damage passed to weapon: {weaponColliderScript.damagePower}");
             }
         }
     }
 
     void Update()
     {
-        // 死亡時またはプレイヤー不在時は何もしない
         if (isDead || player == null) return;
 
         if (isAttacking)
@@ -86,7 +123,6 @@ public class EvilController : MonoBehaviour
         }
     }
 
-    // --- 追加: ダメージを受ける処理 ---
     public void TakeDamage(float damage)
     {
         if (isDead) return;
@@ -94,7 +130,6 @@ public class EvilController : MonoBehaviour
         currentHp -= damage;
         Debug.Log($"{gameObject.name} Took Damage: {damage}. Current HP: {currentHp}");
 
-        
         animator.SetTrigger("Damage");
 
         if (currentHp <= 0)
@@ -103,28 +138,35 @@ public class EvilController : MonoBehaviour
         }
     }
 
-    // --- 追加: 死亡処理 ---
     private void Die()
     {
+        if (isDead) return; // 二重死亡防止
         isDead = true;
+
+        Debug.Log($"{gameObject.name} は倒れた！");
+
+        // --- 追加: プレイヤーに報酬（経験値・ゴールド）を渡す ---
+        if (player != null && enemyData != null)
+        {
+            CharacterCombatController playerCombat = player.GetComponent<CharacterCombatController>();
+            if (playerCombat != null)
+            {
+                playerCombat.GainRewards(enemyData.expReward, enemyData.goldReward);
+            }
+        }
 
         // 動作停止
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
-        agent.enabled = false; // Agent自体を無効化して押せないようにする
+        agent.enabled = false;
 
-        // コライダーを無効化（死体に攻撃が当たらないようにする）
         if (myCollider != null) myCollider.enabled = false;
 
-        // 死亡アニメーション
         animator.SetTrigger("Die");
-        // Animatorのレイヤーウェイト調整などが必要ならここで行う
-
-        // 数秒後にオブジェクトを削除
         Destroy(gameObject, 4.0f);
     }
 
-    // (以下、AttackBehaviorなどは元のまま)
+    // --- 攻撃行動 ---
     void AttackBehavior()
     {
         if (Time.time - lastAttackTime > attackCooldown)

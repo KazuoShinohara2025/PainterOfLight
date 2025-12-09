@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   enemyName: Evil
   maxHp: 6
-  attackPower: 2
+  attackPower: 5
   moveSpeed: 1.5
   expReward: 1
   goldReward: 100
