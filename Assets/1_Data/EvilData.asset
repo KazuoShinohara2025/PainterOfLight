@@ -16,5 +16,5 @@ MonoBehaviour:
   maxHp: 6
   attackPower: 5
   moveSpeed: 1.5
-  expReward: 1
+  expReward: 10
   goldReward: 100

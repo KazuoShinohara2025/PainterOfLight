@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events; // ★追加：これが必要です
 
 public class EvilController : MonoBehaviour
 {
@@ -21,6 +22,11 @@ public class EvilController : MonoBehaviour
     public float attackRange = 1.5f;
     public float attackCooldown = 3f;
 
+    // ★追加：死亡時に実行したいイベントを登録する場所
+    [Header("イベント設定 (ボス用)")]
+    [Tooltip("死亡時に実行する処理（例：ドアの有効化）。通常の敵は空のままでOKです。")]
+    public UnityEvent OnDeath;
+
     private float lastAttackTime;
     private float currentHp;
     private bool isDead = false;
@@ -29,74 +35,38 @@ public class EvilController : MonoBehaviour
 
     void Start()
     {
+        // ... (Startの中身は変更なし) ...
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponent<Animator>();
         myCollider = GetComponent<CapsuleCollider>();
 
-        // プレイヤーの検索
         if (player == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
 
-        // 武器コライダーのセットアップ
         if (weaponColliderScript != null)
         {
             weaponCollider = weaponColliderScript.GetComponent<Collider>();
             weaponCollider.enabled = false;
         }
 
-        // ステータス反映
         if (enemyData != null)
         {
             agent.speed = enemyData.moveSpeed;
             currentHp = enemyData.maxHp;
 
-            // 武器に攻撃力を渡す
             if (weaponColliderScript != null)
             {
                 weaponColliderScript.damagePower = enemyData.attackPower;
-            }
-        }
-
-        // --- デバッグ用ログ追加 ---
-        if (enemyData != null)
-        {
-            Debug.Log($"[Check] EnemyData found. AttackPower: {enemyData.attackPower}");
-        }
-        else
-        {
-            Debug.LogError("[Check] EnemyData is NULL!");
-        }
-
-        if (weaponColliderScript != null)
-        {
-            Debug.Log($"[Check] WeaponScript found on: {weaponColliderScript.name}");
-        }
-        else
-        {
-            Debug.LogError("[Check] WeaponColliderScript is NULL! Inspectorで設定してください！");
-        }
-        // -------------------------
-
-        // 既存のステータス反映処理
-        if (enemyData != null)
-        {
-            agent.speed = enemyData.moveSpeed;
-            // currentHp = enemyData.maxHp; // 重複していたので前回削除済みなら消す
-
-            // 武器に攻撃力を渡す（ここが重要）
-            if (weaponColliderScript != null)
-            {
-                weaponColliderScript.damagePower = enemyData.attackPower;
-                Debug.Log($"[Check] Damage passed to weapon: {weaponColliderScript.damagePower}");
             }
         }
     }
 
     void Update()
     {
+        // ... (Updateの中身は変更なし) ...
         if (isDead || player == null) return;
 
         if (isAttacking)
@@ -140,12 +110,16 @@ public class EvilController : MonoBehaviour
 
     private void Die()
     {
-        if (isDead) return; // 二重死亡防止
+        if (isDead) return;
         isDead = true;
 
         Debug.Log($"{gameObject.name} は倒れた！");
 
-        // --- 追加: プレイヤーに報酬（経験値・ゴールド）を渡す ---
+        // ★追加：ここで登録されたイベントを実行します
+        // BossEvilにだけ設定しておけば、その時だけドアが開く処理が走ります
+        OnDeath?.Invoke();
+
+        // 報酬渡し処理
         if (player != null && enemyData != null)
         {
             CharacterCombatController playerCombat = player.GetComponent<CharacterCombatController>();
@@ -166,7 +140,7 @@ public class EvilController : MonoBehaviour
         Destroy(gameObject, 4.0f);
     }
 
-    // --- 攻撃行動 ---
+    // ... (以下のAttackBehaviorなどは変更なし) ...
     void AttackBehavior()
     {
         if (Time.time - lastAttackTime > attackCooldown)
