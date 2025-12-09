@@ -11,16 +11,15 @@ public class EvilWeapon : MonoBehaviour
         // プレイヤーに当たったか判定（Playerタグがついている前提）
         if (other.CompareTag("Player"))
         {
-            // プレイヤーのHPスクリプトを取得
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            // 【修正】PlayerHealth ではなく CharacterCombatController を取得
+            CharacterCombatController playerCombat = other.GetComponent<CharacterCombatController>();
 
-            if (playerHealth != null)
+            if (playerCombat != null)
             {
-                // ダメージを与える
-                playerHealth.TakeDamage(damagePower);
+                // 【修正】CharacterCombatController にある被ダメージ処理を呼ぶ
+                playerCombat.PlayerTakeDamage(damagePower);
 
-                // 【重要】多段ヒット防止のため、1回当たったらこのColliderを即座に切る
-                // （もし広範囲攻撃で複数巻き込むなら、この行は消してListで管理します）
+                // 多段ヒット防止のため、1回当たったらこのColliderを即座に切る
                 GetComponent<Collider>().enabled = false;
             }
         }
