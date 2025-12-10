@@ -1,7 +1,14 @@
 fileFormatVersion: 2
 guid: 3bc1499c59e6b404c9048e6d6ffff4ed
+AssetOrigin:
+  serializedVersion: 1
+  productId: 313024
+  packageName: Scary_Evil
+  packageVersion: 1.0.0
+  assetPath: Assets/Scary_Evil/Prefab/evil@Walking.fbx
+  uploadId: 738040
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
@@ -22,7 +29,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -56,6 +63,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -94,8 +104,7 @@ ModelImporter:
     - name: mixamorig:Hips
       parentName: Armature
       position: {x: -0.004519276, y: 1.0386899, z: 0.01991082}
-      rotation: {x: -0.00000003824487, y: -0.000000007748609, z: 0.000000004136237,
-        w: 1}
+      rotation: {x: -0.00000003824487, y: -0.000000007748609, z: 0.000000004136237, w: 1}
       scale: {x: 0.99999994, y: 1, z: 0.99999994}
     - name: mixamorig:Spine
       parentName: mixamorig:Hips
@@ -110,8 +119,7 @@ ModelImporter:
     - name: mixamorig:Spine2
       parentName: mixamorig:Spine1
       position: {x: -0.0000000015646219, y: 0.12685588, z: 0.0000000062584875}
-      rotation: {x: -0.000000007450581, y: 3.0614866e-10, z: -0.0000000014829713,
-        w: 1}
+      rotation: {x: -0.000000007450581, y: 3.0614866e-10, z: -0.0000000014829713, w: 1}
       scale: {x: 1, y: 0.9999999, z: 1}
     - name: mixamorig:Neck
       parentName: mixamorig:Spine2
@@ -121,8 +129,7 @@ ModelImporter:
     - name: mixamorig:Head
       parentName: mixamorig:Neck
       position: {x: 0.000000018291175, y: 0.039679017, z: 0.020273594}
-      rotation: {x: -0.000000022351742, y: 4.6566032e-10, z: -0.0000000016298143,
-        w: 1}
+      rotation: {x: -0.000000022351742, y: 4.6566032e-10, z: -0.0000000016298143, w: 1}
       scale: {x: 0.9999999, y: 0.99999994, z: 1}
     - name: mixamorig:HeadTop_End
       parentName: mixamorig:Head
@@ -172,8 +179,7 @@ ModelImporter:
     - name: mixamorig:LeftHandThumb4
       parentName: mixamorig:LeftHandThumb3
       position: {x: -0.018502232, y: 0.0653773, z: -0.000000051259992}
-      rotation: {x: -0.00000011920926, y: -0.000000040353786, z: -0.000000027932838,
-        w: 1}
+      rotation: {x: -0.00000011920926, y: -0.000000040353786, z: -0.000000027932838, w: 1}
       scale: {x: 1.0000005, y: 1.0000001, z: 1.0000005}
     - name: mixamorig:LeftHandThumb4_end
       parentName: mixamorig:LeftHandThumb4
@@ -198,8 +204,7 @@ ModelImporter:
     - name: mixamorig:LeftHandIndex4
       parentName: mixamorig:LeftHandIndex3
       position: {x: 0.0054547116, y: 0.04983424, z: 0.000000009536743}
-      rotation: {x: -0.0000000372529, y: -0.000000018385354, z: 0.000000021324793,
-        w: 1}
+      rotation: {x: -0.0000000372529, y: -0.000000018385354, z: 0.000000021324793, w: 1}
       scale: {x: 1.0000004, y: 1.0000001, z: 1.0000001}
     - name: mixamorig:LeftHandIndex4_end
       parentName: mixamorig:LeftHandIndex4
@@ -224,8 +229,7 @@ ModelImporter:
     - name: mixamorig:LeftHandMiddle4
       parentName: mixamorig:LeftHandMiddle3
       position: {x: 0.0073852106, y: 0.055620153, z: -0.00000007517636}
-      rotation: {x: -0.000000089406946, y: -0.000000002463633, z: -0.00000007983134,
-        w: 1}
+      rotation: {x: -0.000000089406946, y: -0.000000002463633, z: -0.00000007983134, w: 1}
       scale: {x: 0.9999999, y: 1, z: 1}
     - name: mixamorig:LeftHandMiddle4_end
       parentName: mixamorig:LeftHandMiddle4
@@ -275,8 +279,7 @@ ModelImporter:
     - name: mixamorig:LeftHandPinky4
       parentName: mixamorig:LeftHandPinky3
       position: {x: 0.0019465542, y: 0.038099937, z: -0.000000028014183}
-      rotation: {x: -0.000000007450579, y: 0.00000007505635, z: -0.000000049501026,
-        w: 1}
+      rotation: {x: -0.000000007450579, y: 0.00000007505635, z: -0.000000049501026, w: 1}
       scale: {x: 1.0000001, y: 1.0000002, z: 1.0000001}
     - name: mixamorig:LeftHandPinky4_end
       parentName: mixamorig:LeftHandPinky4
@@ -321,8 +324,7 @@ ModelImporter:
     - name: mixamorig:RightHandThumb4
       parentName: mixamorig:RightHandThumb3
       position: {x: 0.019218463, y: 0.07516132, z: 0}
-      rotation: {x: -0.00000016205013, y: -0.00000003508292, z: -0.00000006090721,
-        w: 1}
+      rotation: {x: -0.00000016205013, y: -0.00000003508292, z: -0.00000006090721, w: 1}
       scale: {x: 1.0000001, y: 0.9999998, z: 1}
     - name: mixamorig:RightHandThumb4_end
       parentName: mixamorig:RightHandThumb4
@@ -347,8 +349,7 @@ ModelImporter:
     - name: mixamorig:RightHandIndex4
       parentName: mixamorig:RightHandIndex3
       position: {x: -0.00004899025, y: 0.04575416, z: -0.000000023841856}
-      rotation: {x: -0.00000008940697, y: 0.00000010058746, z: -0.000000040966846,
-        w: 1}
+      rotation: {x: -0.00000008940697, y: 0.00000010058746, z: -0.000000040966846, w: 1}
       scale: {x: 1, y: 1.0000001, z: 1}
     - name: mixamorig:RightHandIndex4_end
       parentName: mixamorig:RightHandIndex4
@@ -373,8 +374,7 @@ ModelImporter:
     - name: mixamorig:RightHandMiddle4
       parentName: mixamorig:RightHandMiddle3
       position: {x: 0.0016638373, y: 0.04144907, z: 0.0000000047683715}
-      rotation: {x: 0.00000023469329, y: -0.00000003120968, z: -0.00000015023201,
-        w: 1}
+      rotation: {x: 0.00000023469329, y: -0.00000003120968, z: -0.00000015023201, w: 1}
       scale: {x: 1, y: 1.0000001, z: 1.0000001}
     - name: mixamorig:RightHandMiddle4_end
       parentName: mixamorig:RightHandMiddle4
@@ -399,8 +399,7 @@ ModelImporter:
     - name: mixamorig:RightHandRing4
       parentName: mixamorig:RightHandRing3
       position: {x: 0.0041823145, y: 0.033047643, z: 0.0000000060349703}
-      rotation: {x: 0.000000013038514, y: -0.00000008020478, z: -0.000000022496275,
-        w: 1}
+      rotation: {x: 0.000000013038514, y: -0.00000008020478, z: -0.000000022496275, w: 1}
       scale: {x: 1, y: 1.0000004, z: 1.0000004}
     - name: mixamorig:RightHandRing4_end
       parentName: mixamorig:RightHandRing4
@@ -425,8 +424,7 @@ ModelImporter:
     - name: mixamorig:RightHandPinky4
       parentName: mixamorig:RightHandPinky3
       position: {x: -0.00021867036, y: 0.023984486, z: 0.000000026226044}
-      rotation: {x: -0.0000000912696, y: -0.00000003046144, z: -0.000000013502891,
-        w: 1}
+      rotation: {x: -0.0000000912696, y: -0.00000003046144, z: -0.000000013502891, w: 1}
       scale: {x: 0.99999976, y: 1.0000001, z: 1}
     - name: mixamorig:RightHandPinky4_end
       parentName: mixamorig:RightHandPinky4
@@ -456,8 +454,7 @@ ModelImporter:
     - name: mixamorig:LeftToe_End
       parentName: mixamorig:LeftToeBase
       position: {x: -0.000000008940696, y: 0.18380141, z: -0.0000000017881393}
-      rotation: {x: 0.000000029802315, y: 0.000000007450579, z: 0.000000052154054,
-        w: 1}
+      rotation: {x: 0.000000029802315, y: 0.000000007450579, z: 0.000000052154054, w: 1}
       scale: {x: 0.9999997, y: 0.9999997, z: 1}
     - name: mixamorig:LeftToe_End_end
       parentName: mixamorig:LeftToe_End
@@ -509,11 +506,11 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 2
+  animationType: 3
   humanoidOversampling: 1
   avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
@@ -523,10 +520,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 313024
-  packageName: Scary_Evil
-  packageVersion: 1.0.0
-  assetPath: Assets/Scary_Evil/Prefab/evil@Walking.fbx
-  uploadId: 738040
