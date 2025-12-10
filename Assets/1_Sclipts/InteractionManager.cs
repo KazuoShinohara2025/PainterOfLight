@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class InteractionManager : MonoBehaviour
 {
+    // ... (前半の変数はそのまま) ...
     [Header("Settings")]
     public float interactionRange = 5f;
     public float detectionRadius = 0.5f;
@@ -11,28 +12,24 @@ public class InteractionManager : MonoBehaviour
     [Tooltip("足元からどれくらい高い位置から判定を出すか（1.3~1.6推奨）")]
     public float rayHeightOffset = 1.5f;
 
-    // デバッグ表示用
     private Vector3 lastRayOrigin;
     private Vector3 lastRayDirection;
     private bool lastHitSuccess;
 
-    // Updateで常時監視する場合（Input Systemの入力判定は別途行ってください）
     private void Update()
     {
-        // 常に正面をチェックする（入力があった時だけ呼ぶ形でもOK）
         CheckInteraction();
     }
 
     public void CheckInteraction()
     {
-        // 1. 発射位置を「足元」から「胸/目の高さ」に上げる
+        // ... (SphereCastの処理はそのまま) ...
         Vector3 rayOrigin = transform.position + (Vector3.up * rayHeightOffset);
-        Vector3 rayDirection = transform.forward; // キャラクターの正面
+        Vector3 rayDirection = transform.forward;
 
         lastRayOrigin = rayOrigin;
         lastRayDirection = rayDirection;
 
-        // 2. QueryTriggerInteraction.Collide を追加して、Trigger（ドアなど）も検知させる
         if (Physics.SphereCast(
             rayOrigin,
             detectionRadius,
@@ -40,12 +37,12 @@ public class InteractionManager : MonoBehaviour
             out RaycastHit hitInfo,
             interactionRange,
             interactableLayers,
-            QueryTriggerInteraction.Collide // ★ここが重要：Triggerもヒットさせる
+            QueryTriggerInteraction.Collide
         ))
         {
             lastHitSuccess = true;
 
-            // Fキーが押されたらインタラクト実行 (Input Systemの記述に合わせてください)
+            // Fキーでインタラクト
             if (UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame)
             {
                 HandleHitObject(hitInfo.collider.gameObject);
@@ -69,7 +66,7 @@ public class InteractionManager : MonoBehaviour
             case "Item":
                 InteractWithItem(target);
                 break;
-            case "NPC":
+            case "NPC": // NPCタグの場合
                 InteractWithTalk(target);
                 break;
             default:
@@ -82,58 +79,41 @@ public class InteractionManager : MonoBehaviour
 
     private void InteractWithDoor(GameObject door)
     {
-        // 親オブジェクトにスクリプトがある場合も考慮して InParent で探す
         Door doorComponent = door.GetComponentInParent<Door>();
-        if (doorComponent != null)
-        {
-            doorComponent.Interact(this.gameObject);
-        }
-        else
-        {
-            Debug.LogWarning("Door component not found!");
-        }
+        if (doorComponent != null) doorComponent.Interact(this.gameObject);
     }
 
     private void InteractWithItem(GameObject item)
     {
         Item itemComponent = item.GetComponentInParent<Item>();
-        if (itemComponent != null)
-        {
-            itemComponent.Interact(this.gameObject);
-        }
+        if (itemComponent != null) itemComponent.Interact(this.gameObject);
     }
 
     private void InteractWithTalk(GameObject npc)
     {
-        // 仮：Itemコンポーネントで会話する場合
-        Item talkComponent = npc.GetComponentInParent<Item>();
-        if (talkComponent != null)
+        // 【修正】NPCコンポーネントを取得してInteractを呼ぶ
+        NPC npcComponent = npc.GetComponentInParent<NPC>();
+        if (npcComponent != null)
         {
-            talkComponent.Interact(this.gameObject);
+            npcComponent.Interact(this.gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("NPC component not found on object tagged NPC");
         }
     }
 
-    // --- Gizmos（可視化） ---
+    // ... (Gizmosはそのまま) ...
     private void OnDrawGizmos()
     {
         if (Application.isPlaying)
         {
             Gizmos.color = lastHitSuccess ? Color.green : Color.red;
-
-            // 視線の高さを考慮して描画
             Vector3 startPos = lastRayOrigin;
             Vector3 endPos = lastRayOrigin + (lastRayDirection * interactionRange);
-
             Gizmos.DrawLine(startPos, endPos);
             Gizmos.DrawWireSphere(startPos, detectionRadius);
             Gizmos.DrawWireSphere(endPos, detectionRadius);
-        }
-        else
-        {
-            // プレイ前でも目安を表示
-            Gizmos.color = Color.cyan;
-            Vector3 start = transform.position + (Vector3.up * rayHeightOffset);
-            Gizmos.DrawLine(start, start + transform.forward * interactionRange);
         }
     }
 }
