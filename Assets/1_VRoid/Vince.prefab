@@ -121,31 +121,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 48
+      value: 0.09
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.3
+      value: 0.022999883
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 67.64
+      value: -4.93
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.00000035762784
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5159078012444724336, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -262,7 +262,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 1.8
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StarterAssets.ThirdPersonController
-  interactionRayOrigin: {fileID: 3804235459535710161}
+  characterStatus: {fileID: 0}
   MoveSpeed: 2
   SprintSpeed: 5.335
   RotationSmoothTime: 0.12
@@ -352,7 +352,7 @@ MonoBehaviour:
   interact: 0
   attack: 0
   lighting: 0
-  skil: 0
+  skill: 0
   ult: 0
   analogMovement: 0
   cursorLocked: 1
@@ -369,12 +369,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa365c6ca9ba4548986a994b31ee50f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionManager
-  interactionRange: 2
-  detectionCenter: {x: 0, y: 0, z: 0}
-  detectionRadius: 2
+  interactionRange: 0.25
+  detectionRadius: 0.25
   interactableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
+  rayHeightOffset: 1.5
 --- !u!1001 &7220737469862041073
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -397,11 +397,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.15235138
+      value: 0.15234947
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.475
+      value: 1.4750001
       objectReference: {fileID: 0}
     - target: {fileID: 2070925441746177912, guid: a1a802ecaf6775746bb2a929fb554ad8, type: 3}
       propertyPath: m_LocalPosition.z
