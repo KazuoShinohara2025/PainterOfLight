@@ -1,118 +1,139 @@
 using UnityEngine;
-using static UnityEditor.Progress;
-// 不要なusingを削除しました
 
 public class InteractionManager : MonoBehaviour
 {
     [Header("Settings")]
     public float interactionRange = 5f;
-    public float detectionRadius = 0.5f; // 半径は0.5f程度が推奨（2だと大きすぎて床に当たります）
+    public float detectionRadius = 0.5f;
     public LayerMask interactableLayers;
 
-    // デバッグ表示用に保持する変数
+    [Header("Ray設定")]
+    [Tooltip("足元からどれくらい高い位置から判定を出すか（1.3~1.6推奨）")]
+    public float rayHeightOffset = 1.5f;
+
+    // デバッグ表示用
     private Vector3 lastRayOrigin;
     private Vector3 lastRayDirection;
     private bool lastHitSuccess;
 
-    public void HandleInteraction(Vector3 rayOrigin, Vector3 rayDirection)
+    // Updateで常時監視する場合（Input Systemの入力判定は別途行ってください）
+    private void Update()
     {
-        // デバッグ用に値を保存
+        // 常に正面をチェックする（入力があった時だけ呼ぶ形でもOK）
+        CheckInteraction();
+    }
+
+    public void CheckInteraction()
+    {
+        // 1. 発射位置を「足元」から「胸/目の高さ」に上げる
+        Vector3 rayOrigin = transform.position + (Vector3.up * rayHeightOffset);
+        Vector3 rayDirection = transform.forward; // キャラクターの正面
+
         lastRayOrigin = rayOrigin;
         lastRayDirection = rayDirection;
 
-        // 【修正点】RaycastとSphereCastを混ぜず、SphereCastのみを使用します。
-        // SphereCastは「太いRaycast」なので、Raycastの代わりになります。
-        if (Physics.SphereCast(rayOrigin, detectionRadius, rayDirection, out RaycastHit hitInfo, interactionRange, interactableLayers))
+        // 2. QueryTriggerInteraction.Collide を追加して、Trigger（ドアなど）も検知させる
+        if (Physics.SphereCast(
+            rayOrigin,
+            detectionRadius,
+            rayDirection,
+            out RaycastHit hitInfo,
+            interactionRange,
+            interactableLayers,
+            QueryTriggerInteraction.Collide // ★ここが重要：Triggerもヒットさせる
+        ))
         {
             lastHitSuccess = true;
-            Debug.Log($"Hit Object: {hitInfo.collider.gameObject.name}, Tag: {hitInfo.collider.tag}");
 
-            // 取得したオブジェクトに対して処理を行う
-            GameObject target = hitInfo.collider.gameObject;
-
-            switch (target.tag)
+            // Fキーが押されたらインタラクト実行 (Input Systemの記述に合わせてください)
+            if (UnityEngine.InputSystem.Keyboard.current.fKey.wasPressedThisFrame)
             {
-                case "Door":
-                    InteractWithDoor(target);
-                    break;
-                case "Item":
-                    InteractWithItem(target);
-                    break;
-                case "NPC":
-                    InteractWithTalk(target);
-                    break;
-                default:
-                    Debug.Log($"Interacting with unknown object tag: {target.tag}");
-                    break;
+                HandleHitObject(hitInfo.collider.gameObject);
             }
         }
         else
         {
             lastHitSuccess = false;
-            // Debug.Log("SphereCast did not hit any object"); // 頻繁に出るのでコメントアウト推奨
         }
     }
 
+    private void HandleHitObject(GameObject target)
+    {
+        Debug.Log($"Interact Action: {target.name} [{target.tag}]");
+
+        switch (target.tag)
+        {
+            case "Door":
+                InteractWithDoor(target);
+                break;
+            case "Item":
+                InteractWithItem(target);
+                break;
+            case "NPC":
+                InteractWithTalk(target);
+                break;
+            default:
+                Debug.Log($"Unknown tag: {target.tag}");
+                break;
+        }
+    }
+
+    // --- 各インタラクト処理 ---
+
     private void InteractWithDoor(GameObject door)
     {
-        // Debug.Log($"Attempting to interact with door: {door.name}");
-        // 相手がDoorコンポーネントを持っているか確認
-        // ※DoorクラスがIPublicインターフェースなどを継承しているとなお良いです
-        if (door.TryGetComponent<Door>(out Door doorComponent))
+        // 親オブジェクトにスクリプトがある場合も考慮して InParent で探す
+        Door doorComponent = door.GetComponentInParent<Door>();
+        if (doorComponent != null)
         {
-            doorComponent.Interact();
+            doorComponent.Interact(this.gameObject);
         }
         else
         {
-            Debug.LogError($"Object tagged 'Door' ({door.name}) is missing 'Door' component!");
+            Debug.LogWarning("Door component not found!");
         }
     }
 
     private void InteractWithItem(GameObject item)
     {
-        if (item.TryGetComponent<Item>(out Item itemComponent))
+        Item itemComponent = item.GetComponentInParent<Item>();
+        if (itemComponent != null)
         {
-            itemComponent.Interact();
-        }
-        else
-        {
-            Debug.LogWarning($"Object tagged 'Item' ({item.name}) is missing 'Item' component!");
+            itemComponent.Interact(this.gameObject);
         }
     }
 
     private void InteractWithTalk(GameObject npc)
     {
-        // 【修正点】元のコードではここでItemコンポーネントを取得していましたが、
-        // 会話なので NPC コンポーネント（またはそれに準ずるもの）を取得すべきです。
-        // ここでは仮に 'NPC' というクラスがあると仮定して修正しています。
-        // もし会話も 'Item' クラスで管理しているなら元のままで構いません。
-
-        // 例: NPCクラスを取得する場合
-        
-        if (npc.TryGetComponent<NPC>(out NPC npcComponent))
+        // 仮：Itemコンポーネントで会話する場合
+        Item talkComponent = npc.GetComponentInParent<Item>();
+        if (talkComponent != null)
         {
-            npcComponent.Interact();
-        }
-        else
-        {
-            Debug.LogWarning($"Object tagged 'npc' ({npc.name}) is missing 'npc' component!");
+            talkComponent.Interact(this.gameObject);
         }
     }
 
-    // エディタ上で判定範囲（SphereCast）を可視化する機能
+    // --- Gizmos（可視化） ---
     private void OnDrawGizmos()
     {
         if (Application.isPlaying)
         {
             Gizmos.color = lastHitSuccess ? Color.green : Color.red;
 
-            // 線の描画
-            Gizmos.DrawRay(lastRayOrigin, lastRayDirection * interactionRange);
+            // 視線の高さを考慮して描画
+            Vector3 startPos = lastRayOrigin;
+            Vector3 endPos = lastRayOrigin + (lastRayDirection * interactionRange);
 
-            // 当たり判定の球を描画（位置の目安）
-            Vector3 endPosition = lastRayOrigin + (lastRayDirection * interactionRange);
-            Gizmos.DrawWireSphere(lastRayOrigin, detectionRadius); // 開始地点
-            Gizmos.DrawWireSphere(endPosition, detectionRadius);   // 終了地点
+            Gizmos.DrawLine(startPos, endPos);
+            Gizmos.DrawWireSphere(startPos, detectionRadius);
+            Gizmos.DrawWireSphere(endPos, detectionRadius);
+        }
+        else
+        {
+            // プレイ前でも目安を表示
+            Gizmos.color = Color.cyan;
+            Vector3 start = transform.position + (Vector3.up * rayHeightOffset);
+            Gizmos.DrawLine(start, start + transform.forward * interactionRange);
         }
     }
 }

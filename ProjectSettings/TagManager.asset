@@ -17,9 +17,9 @@ TagManager:
   - UI
   - Enemy
   - Interact
-  - 
-  - 
-  - 
+  - DefaultWorld
+  - HiddenWorld
+  - VFX
   - 
   - 
   - 

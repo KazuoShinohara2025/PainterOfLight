@@ -21,7 +21,7 @@ namespace StarterAssets
         [Header("Player")]
 
         [Header("Interaction")]
-        public Transform interactionRayOrigin;
+        // public Transform interactionRayOrigin; // ★InteractionManager側で計算するため不要になりました
         private InteractionManager _interactionManager;
 
         [Tooltip("Move speed of the character in m/s")]
@@ -126,7 +126,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
                 return _playerInput.currentControlScheme == "KeyboardMouse";
 #else
-				return false;
+                return false;
 #endif
             }
         }
@@ -404,15 +404,14 @@ namespace StarterAssets
             }
         }
 
+        // --- 修正箇所: Interact ---
         private void Interact()
         {
-            if (_input.interact && _interactionManager != null)
+            // 前回の修正でInteractionManagerが独自に監視・処理する仕様になったため、
+            // ここからメソッドを呼び出す必要はなくなりました。
+            // 入力フラグだけ消費してリセットしておきます。
+            if (_input.interact)
             {
-                Vector3 rayOrigin = interactionRayOrigin.position;
-                Vector3 rayDirection = _mainCamera.transform.forward;
-
-                _interactionManager.HandleInteraction(rayOrigin, rayDirection);
-
                 _input.interact = false;
             }
         }
@@ -424,7 +423,7 @@ namespace StarterAssets
                 _animator.SetTrigger("Attack");
 
                 Debug.Log("attack");
-                _input.attack = true;
+                // _input.attack = true; // 意図不明なためコメントアウト（trueにしてすぐfalseにしていた）
                 _input.attack = false;
             }
         }
@@ -434,12 +433,12 @@ namespace StarterAssets
             if (_input.lighting && _interactionManager != null)
             {
                 _animator.SetTrigger("Lighting");
-                
+
                 Debug.Log("lighting");
-                _input.lighting = true;
+                // _input.lighting = true;
                 _input.lighting = false;
             }
-            
+
         }
 
         private void Skill()
@@ -449,23 +448,23 @@ namespace StarterAssets
                 _animator.SetTrigger("Skill");
 
                 Debug.Log("skill");
-                _input.skill = true;
+                // _input.skill = true;
                 _input.skill = false;
             }
         }
 
         private void Ult()
         {
+            // --- 修正箇所: バグ修正 ---
+            // 元のコードでは if (_input.skill) がネストされており、
+            // 「UltとSkillを同時押ししないとUltが出ない」状態になっていたため修正
             if (_input.ult && _interactionManager != null)
             {
-                if (_input.skill && _interactionManager != null)
-                {
-                    _animator.SetTrigger("Ult");
+                _animator.SetTrigger("Ult");
 
-                    Debug.Log("Ult");
-                    _input.ult = true;
-                    _input.ult = false;
-                }
+                Debug.Log("Ult");
+                // _input.ult = true;
+                _input.ult = false;
             }
         }
 

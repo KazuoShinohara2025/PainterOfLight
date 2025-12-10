@@ -4,21 +4,24 @@ using UnityEngine;
 public class ItemData : ScriptableObject
 {
     [Header("HP")]
-    [Min(0f)] public float hp = 1.1f;
+    [Min(0f)] public float hp = 10f;
 
     [Header("マナ")]
-    [Min(0f)] public float mana = 1.1f;
+    [Min(0f)] public float mana = 10f;
 
     [Header("攻撃力")]
-    [Min(0f)] public float attack = 1.1f;
+    [Min(0f)] public float baseAttack = 5f;
 
-    [Header("移動速度")]
-    [Min(0f)] public float moveSpeed = 1.1f;
+    [Header("防御力")]
+    [Min(0f)] public float baseDefense = 5f;
 
-    [Header("ジャンプ力")]
-    [Min(0f)] public float jump = 1.1f;
+    [Header("スキル倍率")]
+    [Min(0f)] public float skillDamageMultiplier = 0.2f;
 
-    [Header("二段ジャンプ")]
-    public bool doubleJump = true;
+    [Header("アルティメット倍率")]
+    [Min(0f)] public float ultDamageMultiplier = 0.2f;
+
+    [Header("獲得ゴールド")]
+    [Min(0)] public int totalGold = 2000;
 
 }

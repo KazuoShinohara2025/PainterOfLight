@@ -28,7 +28,7 @@ MonoBehaviour:
   attackCooldownTime: 1
   attackCost: 1
   lightingAnimationTrigger: Lighting
-  lightingRangeMultiplier: 10
+  lightingRangeMultiplier: 5
   lightingCooldownTime: 5
   lightingDurationTime: 60
   lightingCost: 5
