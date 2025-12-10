@@ -1,57 +1,58 @@
 using UnityEngine;
-using System.Collections.Generic; // Listを使うために必要
+using System.Collections.Generic;
 
-[RequireComponent(typeof(ParticleSystem))] // ParticleSystemが必須であることを保証
+[RequireComponent(typeof(ParticleSystem))]
 public class ParticleDamageSender : MonoBehaviour
 {
     private ParticleSystem ps;
     private DamageEffect damageEffect;
 
-    // 衝突情報を取得するためのリスト（ヒット位置を知りたい場合に使う）
-    private List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
+    // ヒット位置特定用（必要に応じて使用）
+    // private List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
 
     void Start()
     {
         ps = GetComponent<ParticleSystem>();
 
-        // DamageEffectは同じオブジェクトにある前提でキャッシュする
+        // DamageEffectを取得（親オブジェクトにある場合も考慮）
         damageEffect = GetComponent<DamageEffect>();
-
         if (damageEffect == null)
         {
-            // もし同じ場所にないなら親も探す（構成による）
             damageEffect = GetComponentInParent<DamageEffect>();
         }
 
         if (damageEffect == null)
         {
-            Debug.LogError($"{gameObject.name} に DamageEffect スクリプトが見つかりません！");
+            Debug.LogError($"[Error] {gameObject.name}: DamageEffect スクリプトが見つかりません！");
         }
     }
 
+    // パーティクルが「Collisionモジュール設定済みのCollider」に当たると呼ばれる
     void OnParticleCollision(GameObject other)
     {
-        // DamageEffectがない場合は処理しない
+        // まず衝突自体を検知できているか確認するログ
+         Debug.Log($"[Particle Hit] {gameObject.name} hit {other.name} (Tag: {other.tag})");
+        // とにかく当たった相手の名前を出す
+        Debug.Log($"[Debug] 当たったオブジェクト: {other.name} / Tag: {other.tag} / Layer: {LayerMask.LayerToName(other.gameObject.layer)}");
+
         if (damageEffect == null) return;
 
-        // Enemyタグがついているか確認
+        // Enemyタグの確認
         if (other.CompareTag("Enemy"))
         {
-            // 敵のコンポーネントを取得
             EvilController enemy = other.GetComponent<EvilController>();
 
             if (enemy != null)
             {
-                // ダメージを与える
+                // ダメージ処理
                 enemy.TakeDamage(damageEffect.damageAmount);
 
-                // --- 【応用】ヒットした場所にエフェクトを出したい場合 ---
-                // int numCollisionEvents = ps.GetCollisionEvents(other, collisionEvents);
-                // if (numCollisionEvents > 0)
-                // {
-                //     Vector3 hitPos = collisionEvents[0].intersection;
-                //     // ここで hitPos にヒットエフェクトを生成(Instantiate)する
-                // }
+                // 成功ログ
+                Debug.Log($"[Success] Magic hit Enemy! Dealt {damageEffect.damageAmount} damage.");
+            }
+            else
+            {
+                Debug.LogWarning($"[Warning] {other.name} はEnemyタグですが、EvilControllerがありません。");
             }
         }
     }

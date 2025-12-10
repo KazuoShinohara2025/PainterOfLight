@@ -5,21 +5,20 @@ public class DamageEffect : MonoBehaviour
     // プレイヤーから受け取るダメージ値
     [HideInInspector] public float damageAmount;
 
+    // --- もしパーティクルではなく、球体Colliderなどを飛ばす場合はこちらが動きます ---
     private void OnTriggerEnter(Collider other)
     {
-        // "Enemy"タグを持つオブジェクトに衝突した場合
         if (other.CompareTag("Enemy"))
         {
-            // 敵のスクリプトを取得してダメージを与える
             EvilController enemy = other.GetComponent<EvilController>();
             if (enemy != null)
             {
                 enemy.TakeDamage(damageAmount);
-                Debug.Log($"Enemy hit! Damage dealt: {damageAmount}");
-            }
+                Debug.Log($"[Trigger Hit] Dealt {damageAmount} damage via Collider.");
 
-            // ヒットしたらエフェクトを消す等の処理が必要ならここに書く
-            // Destroy(gameObject); // 貫通させたい場合は消さない
+                // コライダーの場合は多段ヒット防止のために判定を消すなどの処理が必要
+                // GetComponent<Collider>().enabled = false; 
+            }
         }
     }
 }

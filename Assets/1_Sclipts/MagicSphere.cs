@@ -50,7 +50,7 @@ public class MagicSphere : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // デバッグ: そもそも何かに当たったか？
-        Debug.Log($"[Sphere Debug] スフィアが接触: {other.name} (Tag: {other.tag}, Layer: {LayerMask.LayerToName(other.gameObject.layer)})");
+        //Debug.Log($"[Sphere Debug] スフィアが接触: {other.name} (Tag: {other.tag}, Layer: {LayerMask.LayerToName(other.gameObject.layer)})");
 
         // 1. 隠しオブジェクト処理
         HiddenObject hidden = other.GetComponent<HiddenObject>();
