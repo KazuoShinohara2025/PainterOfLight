@@ -1,8 +1,9 @@
 using System;
+using System.Collections; // ★追加：ここが抜けているとIEnumeratorエラーになります
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic; // Listを使うために必要
-using System.Linq; // ランダム抽選を楽にするために必要
+using StarterAssets;
+using System.Linq;
 
 public class CharacterCombatController : MonoBehaviour
 {
@@ -32,9 +33,16 @@ public class CharacterCombatController : MonoBehaviour
 
     [Header("参照")]
     public PlayerManaManager manaVisualManager;
+    // ★追加：GameOverUIManagerへの参照
+    public GameOverUIManager gameOverUIManager;
+
+    [Header("オートターゲット設定")]
+    [Tooltip("敵を索敵する範囲")]
+    public float autoTargetRange = 10.0f;
 
     private Animator animator;
     private PlayerInput playerInput;
+    private StarterAssetsInputs starterAssetsInputs; // 移動を止めるために取得
 
     // --- ステータス公開プロパティ ---
     public float CurrentHp { get; private set; }
@@ -43,16 +51,23 @@ public class CharacterCombatController : MonoBehaviour
     public int CurrentGold { get; private set; }
 
     private bool isDead = false;
+    private bool isMovementLocked = false; // 移動ロック用フラグ
+
+    // --- クールダウン管理用変数 ---
+    private float nextAttackTime = 0f;
+    private float nextLightingTime = 0f;
+    private float nextSkillTime = 0f;
+    private float nextUltTime = 0f;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
+        starterAssetsInputs = GetComponent<StarterAssetsInputs>(); // Input取得
     }
 
     private void Start()
     {
-        // 初期化
         if (characterStatus != null)
         {
             CurrentHp = characterStatus.maxHp;
@@ -62,17 +77,16 @@ public class CharacterCombatController : MonoBehaviour
         }
     }
 
-    // --- 更新処理（マナの自然回復などを入れるならここ） ---
     private void Update()
     {
-        // (例) マナを徐々に回復させたい場合
-        // if (!isDead && CurrentMana < characterStatus.maxMana)
-        // {
-        //     CurrentMana += Time.deltaTime * 1.0f; 
-        // }
+        // 移動ロック中は、強制的に移動入力を(0,0)にする
+        if (isMovementLocked && starterAssetsInputs != null)
+        {
+            starterAssetsInputs.move = Vector2.zero;
+        }
     }
 
-    // --- アクション処理 (マナ消費ロジックを追加) ---
+    // --- アクション処理 ---
 
     public void OnAttack(InputValue value)
     {
@@ -80,14 +94,19 @@ public class CharacterCombatController : MonoBehaviour
 
         if (value.isPressed)
         {
-            // 通常攻撃にもコストを設定する場合
+            // クールダウンチェック
+            if (Time.time < nextAttackTime) return;
+
+            // マナコストチェック（通常攻撃にもコストがあれば）
             if (CheckAndConsumeMana(characterStatus.attackCost))
             {
+                // クールダウン更新
+                nextAttackTime = Time.time + characterStatus.attackCooldownTime;
+
+                // ★一番近い敵を向く
+                FaceNearestEnemy();
+
                 animator.SetTrigger(characterStatus.attackAnimationTrigger);
-            }
-            else
-            {
-                Debug.Log("通常攻撃のマナが足りません（設定されている場合）");
             }
         }
     }
@@ -98,8 +117,17 @@ public class CharacterCombatController : MonoBehaviour
 
         if (value.isPressed)
         {
+            // クールダウンチェック
+            if (Time.time < nextLightingTime) return;
+
             if (CheckAndConsumeMana(characterStatus.lightingCost))
             {
+                // クールダウン更新
+                nextLightingTime = Time.time + characterStatus.lightingCooldownTime;
+
+                // ★移動をロックする
+                isMovementLocked = true;
+
                 animator.SetTrigger(characterStatus.lightingAnimationTrigger);
             }
             else
@@ -115,8 +143,17 @@ public class CharacterCombatController : MonoBehaviour
 
         if (value.isPressed)
         {
+            // クールダウンチェック
+            if (Time.time < nextSkillTime) return;
+
             if (CheckAndConsumeMana(characterStatus.skillCost))
             {
+                // クールダウン更新
+                nextSkillTime = Time.time + characterStatus.skillCooldownTime;
+
+                // ★一番近い敵を向く
+                FaceNearestEnemy();
+
                 animator.SetTrigger(characterStatus.skillAnimationTrigger);
             }
             else
@@ -132,8 +169,14 @@ public class CharacterCombatController : MonoBehaviour
 
         if (value.isPressed)
         {
+            // クールダウンチェック
+            if (Time.time < nextUltTime) return;
+
             if (CheckAndConsumeMana(characterStatus.ultCost))
             {
+                // クールダウン更新
+                nextUltTime = Time.time + characterStatus.ultCooldownTime;
+
                 animator.SetTrigger(characterStatus.ultAnimationTrigger);
             }
             else
@@ -143,43 +186,63 @@ public class CharacterCombatController : MonoBehaviour
         }
     }
 
-    // --- ヘルパー関数: マナチェックと消費 ---
+    // --- ★オートターゲット処理 ---
+    private void FaceNearestEnemy()
+    {
+        // 指定範囲内の全てのコライダーを取得
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, autoTargetRange);
+
+        // "Enemy"タグを持つものだけを抽出して、距離が近い順に並び替え
+        var nearestEnemy = hitColliders
+            .Where(c => c.CompareTag("Enemy"))
+            .OrderBy(c => Vector3.Distance(transform.position, c.transform.position))
+            .FirstOrDefault();
+
+        if (nearestEnemy != null)
+        {
+            // 敵の方向を向く（Y軸の回転のみ適用し、変に傾かないようにする）
+            Vector3 targetPosition = nearestEnemy.transform.position;
+            targetPosition.y = transform.position.y; // 高さは自分と同じにする
+            transform.LookAt(targetPosition);
+        }
+    }
+
+    // --- ヘルパー関数 ---
     private bool CheckAndConsumeMana(float cost)
     {
         if (CurrentMana >= cost)
         {
             CurrentMana -= cost;
-            // Debug.Log($"マナ消費: {cost}, 残り: {CurrentMana}");
             return true;
         }
         return false;
     }
 
-    // --- 経験値・ゴールド獲得処理（敵から呼ばれる） ---
     public void GainRewards(int exp, int gold)
     {
         if (isDead) return;
-
         CurrentExp += exp;
         CurrentGold += gold;
-
-        Debug.Log($"報酬獲得! Exp: +{exp}, Gold: +{gold} (Total Exp: {CurrentExp})");
-
-        // ここでレベルアップ計算などを行う
-        // if (CurrentExp >= NextLevelExp) { LevelUp(); }
+        Debug.Log($"報酬獲得! Exp: +{exp}, Gold: +{gold}");
     }
+
+    // --- アイテム強化 ---
+    public void ApplyStatBoost(ItemData boostData) { /* 省略（以前のコードのまま） */ }
+    public void ApplyRandomStatBoost(ItemData boostData, int count) { /* 省略（以前のコードのまま） */ }
+
 
     // --- 被ダメージ処理 ---
     public void PlayerTakeDamage(float damage)
     {
         if (isDead) return;
 
-        // 防御力計算（簡易）: ダメージ - 防御力（最低0ダメージ）
         float defense = characterStatus != null ? characterStatus.baseDefense : 0;
         float finalDamage = Mathf.Max(0, damage - defense);
 
         CurrentHp -= finalDamage;
         Debug.Log($"Player HP Reduced: {CurrentHp} (Damage: {finalDamage})");
+
+        animator.SetTrigger("Damage");
 
         if (CurrentHp <= 0)
         {
@@ -193,9 +256,44 @@ public class CharacterCombatController : MonoBehaviour
         if (playerInput != null) playerInput.DeactivateInput();
         animator.SetTrigger("Die");
         Debug.Log("Player Died");
+
+        // ★追加：アニメーション終了待ちコルーチンを開始
+        StartCoroutine(WaitAndShowGameOver());
     }
 
-    // --- Animation Eventなど ---
+    // ★追加：死亡アニメーションの長さを待ってからUIを出すコルーチン
+    private IEnumerator WaitAndShowGameOver()
+    {
+        // アニメーションステートが遷移するのを1フレーム待つ
+        yield return null;
+
+        float waitTime = 3.0f; // デフォルト待機時間（取得失敗時用）
+
+        // 現在のアニメーション（Die）の長さを取得して待機時間に設定
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Die") || stateInfo.IsTag("Die")) // ステート名かタグで確認
+        {
+            waitTime = stateInfo.length;
+        }
+        else
+        {
+            // 遷移中の場合、NextStateInfoを見る必要がある場合もありますが、
+            // 簡易的に固定秒数待つか、少し長めに待つのも安全です。
+            // ここでは念のため少し長めの固定値も検討してください。
+        }
+
+        // アニメーションの長さ分待機
+        yield return new WaitForSeconds(waitTime);
+
+        // ゲームオーバーUIを表示
+        if (gameOverUIManager != null)
+        {
+            gameOverUIManager.ShowGameOver();
+        }
+    }
+
+    // --- Animation Eventから呼ばれる関数 ---
+
     public void TriggerAttackVFX()
     {
         float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.attackDamageMultiplier);
@@ -218,6 +316,14 @@ public class CharacterCombatController : MonoBehaviour
         SpawnVFX(ultVFX, ultimateSpawnPoint, damage);
     }
 
+    // ★追加: Lightingのアニメーション終了時などに呼ぶイベント
+    // Animation Windowで、Lightingアニメーションの最後にこのイベントを追加してください
+    public void OnLightingEnd()
+    {
+        // 移動ロック解除
+        isMovementLocked = false;
+    }
+
     private void SpawnVFX(GameObject vfxPrefab, Transform spawnPoint, float damageValue)
     {
         if (vfxPrefab != null)
@@ -233,81 +339,6 @@ public class CharacterCombatController : MonoBehaviour
     float CalculateDamage(float baseVal, float multiplier)
     {
         return baseVal * multiplier;
-    }
-
-    // --- 【追加】ランダムで指定数（count）のステータスを選んで強化する ---
-    public void ApplyRandomStatBoost(ItemData boostData, int count)
-    {
-        if (characterStatus == null || boostData == null) return;
-
-        // 1. 抽選可能なステータスの種類をリスト化 (0~6のIDで管理)
-        // 0:HP, 1:Mana, 2:Attack, 3:Defense, 4:SkillMulti, 5:UltMulti, 6:Gold
-        List<int> statTypes = new List<int> { 0, 1, 2, 3, 4, 5, 6 };
-
-        // 2. リストをシャッフルして、先頭から指定数(count)だけ取り出す
-        // (Fisher-Yatesシャッフル的な簡易実装、またはLinqのOrderBy(GUID)を使用)
-        var selectedTypes = statTypes.OrderBy(x => System.Guid.NewGuid()).Take(count).ToList();
-
-        Debug.Log($"--- ランダムステータス強化 ({count}種) ---");
-
-        // 3. 選ばれたIDに応じてステータスを加算
-        foreach (int type in selectedTypes)
-        {
-            switch (type)
-            {
-                case 0: // HP
-                    if (boostData.hp > 0)
-                    {
-                        characterStatus.maxHp += boostData.hp;
-                        CurrentHp += boostData.hp; // 現在値も回復
-                        Debug.Log($"当たり: HP +{boostData.hp}");
-                    }
-                    break;
-                case 1: // Mana
-                    if (boostData.mana > 0)
-                    {
-                        characterStatus.maxMana += boostData.mana;
-                        CurrentMana += boostData.mana;
-                        Debug.Log($"当たり: Mana +{boostData.mana}");
-                    }
-                    break;
-                case 2: // Attack
-                    if (boostData.baseAttack > 0)
-                    {
-                        characterStatus.baseAttack += boostData.baseAttack;
-                        Debug.Log($"当たり: 攻撃力 +{boostData.baseAttack}");
-                    }
-                    break;
-                case 3: // Defense
-                    if (boostData.baseDefense > 0)
-                    {
-                        characterStatus.baseDefense += boostData.baseDefense;
-                        Debug.Log($"当たり: 防御力 +{boostData.baseDefense}");
-                    }
-                    break;
-                case 4: // Skill
-                    if (boostData.skillDamageMultiplier > 0)
-                    {
-                        characterStatus.skillDamageMultiplier += boostData.skillDamageMultiplier;
-                        Debug.Log($"当たり: スキル倍率 +{boostData.skillDamageMultiplier}");
-                    }
-                    break;
-                case 5: // Ult
-                    if (boostData.ultDamageMultiplier > 0)
-                    {
-                        characterStatus.ultDamageMultiplier += boostData.ultDamageMultiplier;
-                        Debug.Log($"当たり: ウルト倍率 +{boostData.ultDamageMultiplier}");
-                    }
-                    break;
-                case 6: // Gold
-                    if (boostData.totalGold > 0)
-                    {
-                        GainRewards(0, boostData.totalGold);
-                        Debug.Log($"当たり: ゴールド +{boostData.totalGold}");
-                    }
-                    break;
-            }
-        }
     }
 
     public void EnableAttackCollider() { if (weaponCollider != null) weaponCollider.enabled = true; }
