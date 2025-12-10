@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events; // ★追加：これが必要です
+using UnityEngine.Events;
 
 public class EvilController : MonoBehaviour
 {
+    // ... (変数はそのまま) ...
     [Header("データ設定")]
     public EnemyData enemyData;
 
@@ -13,7 +14,6 @@ public class EvilController : MonoBehaviour
     public Animator animator;
 
     [Header("武器設定")]
-    [Tooltip("BoxColliderがついている武器/手のオブジェクト")]
     public EvilWeapon weaponColliderScript;
     private Collider weaponCollider;
 
@@ -22,9 +22,7 @@ public class EvilController : MonoBehaviour
     public float attackRange = 1.5f;
     public float attackCooldown = 3f;
 
-    // ★追加：死亡時に実行したいイベントを登録する場所
     [Header("イベント設定 (ボス用)")]
-    [Tooltip("死亡時に実行する処理（例：ドアの有効化）。通常の敵は空のままでOKです。")]
     public UnityEvent OnDeath;
 
     private float lastAttackTime;
@@ -66,13 +64,17 @@ public class EvilController : MonoBehaviour
 
     void Update()
     {
-        // ... (Updateの中身は変更なし) ...
         if (isDead || player == null) return;
 
+        // 攻撃モーション中は移動を止めてリターンする（この仕様は維持）
         if (isAttacking)
         {
-            agent.isStopped = true;
-            agent.velocity = Vector3.zero;
+            // NavMeshAgentが有効な場合のみ操作する
+            if (agent.enabled)
+            {
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+            }
             return;
         }
 
@@ -100,11 +102,20 @@ public class EvilController : MonoBehaviour
         currentHp -= damage;
         Debug.Log($"{gameObject.name} Took Damage: {damage}. Current HP: {currentHp}");
 
-        animator.SetTrigger("Damage");
+        // 攻撃モーション中断
+        isAttacking = false;
+        if (weaponCollider != null) weaponCollider.enabled = false;
+        if (agent.enabled) agent.isStopped = false;
 
+        // ★修正ポイント：HPが0以下のときは Die だけを呼ぶ（Damageは呼ばない）
         if (currentHp <= 0)
         {
             Die();
+        }
+        else
+        {
+            // 生きている時だけダメージモーション
+            animator.SetTrigger("Damage");
         }
     }
 

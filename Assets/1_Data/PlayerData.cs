@@ -23,7 +23,7 @@ public class PlayerData : ScriptableObject
     [Min(0f)] public float moveSpeed = 5.335f;
 
     [Header("ƒ‰ƒCƒg‚Ì”ÍˆÍ")]
-    [Min(0f)] public float lightingRange = 10.0f;
+    [Min(0f)] public float lightingRange = 50.0f;
 
     [Header("ƒŒƒxƒ‹")]
     [Min(0f)] public float lv = 1f;

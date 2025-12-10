@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening; // DOTween用
 
 public class MagicSphere : MonoBehaviour
 {
@@ -6,7 +7,11 @@ public class MagicSphere : MonoBehaviour
     [Tooltip("球体の有効時間（秒）")]
     public float lifeTime = 60f;
     [Tooltip("変化が始まる半径（実際の球体のScaleと合わせるか少し大きめに）")]
-    public float effectRadius = 2.5f; // Scaleが5なら半径は2.5
+    public float effectRadius = 2.5f;
+
+    [Header("消滅アニメーション")]
+    public float shrinkDuration = 1.0f; // 消えるときにかかる時間
+    public Ease shrinkEase = Ease.InBack; // 消えるときの動き（シュッと消える）
 
     // シェーダー側のプロパティ名と紐付けるID
     private static readonly int GlobalSphereCenterID = Shader.PropertyToID("_GlobalMagicSphereCenter");
@@ -14,54 +19,97 @@ public class MagicSphere : MonoBehaviour
 
     void Start()
     {
-        // 指定時間後にこの球体を破壊する
-        Destroy(gameObject, lifeTime);
-
         // 半径の情報をシェーダー全体に伝える
         Shader.SetGlobalFloat(GlobalSphereRadiusID, effectRadius);
+
+        // --- 修正: いきなりDestroyせず、時間経過後に「縮小処理」を開始する ---
+        // DOTweenの遅延実行機能を使います
+        DOVirtual.DelayedCall(lifeTime, StartShrinkDisappear).SetLink(gameObject);
+    }
+
+    void Update()
+    {
+        // 毎フレーム、現在位置をシェーダーに伝える
+        Shader.SetGlobalVector(GlobalSphereCenterID, transform.position);
+    }
+
+    // --- 追加: ゆっくり消える処理 ---
+    private void StartShrinkDisappear()
+    {
+        // スケールを0にするアニメーション
+        transform.DOScale(Vector3.zero, shrinkDuration)
+            .SetEase(shrinkEase)
+            .OnComplete(() =>
+            {
+                // アニメーションが終わったら削除
+                Destroy(gameObject);
+            });
     }
 
     // 球体のTriggerに入ったとき
     private void OnTriggerEnter(Collider other)
     {
-        // 隠されたオブジェクトなら表示させる
-        HiddenObject hidden = other.GetComponent<HiddenObject>();
-        if (hidden != null)
-        {
-            hidden.Reveal();
-        }
+        // デバッグ: そもそも何かに当たったか？
+        //Debug.Log($"[Sphere Debug] スフィアが接触: {other.name} (Tag: {other.tag}, Layer: {LayerMask.LayerToName(other.gameObject.layer)})");
 
-        // 触れたオブジェクトが「Target」タグを持っているか確認する
-        if (other.CompareTag("Item"))
+        // 1. 隠しオブジェクト処理
+        HiddenObject hidden = other.GetComponent<HiddenObject>();
+        if (hidden != null) hidden.Reveal();
+
+        // 2. アイテム処理
+        if (other.CompareTag("Item")) other.gameObject.SetActive(true);
+
+        // 3. 敵出現処理
+        RespawnPoint point = other.GetComponent<RespawnPoint>();
+
+        if (point != null)
         {
-            // 触れたオブジェクトをアクティブにする
-            other.gameObject.SetActive(true);
+            Debug.Log($"[Sphere Debug] RespawnPointコンポーネントを発見！ Type: {point.type}");
+
+            if (point.type == SpawnType.Enemy)
+            {
+                CharacterCombatController playerController = GetComponentInParent<CharacterCombatController>();
+
+                if (playerController != null)
+                {
+                    int level = Mathf.FloorToInt(playerController.characterStatus.lv); // ※本来はLv参照ですが、テスト用にHPなど確実に取れる値で試すのも手です
+                                                                                    // 正しくは: int level = Mathf.FloorToInt(playerController.characterStatus.lv);
+
+                    if (level < 1) level = 1;
+
+                    Debug.Log($"[Sphere Debug] 敵生成命令を出します。Lv: {level}");
+                    point.SpawnEnemies(level);
+                }
+                else
+                {
+                    Debug.LogWarning("[Sphere Debug] 親オブジェクトから CharacterCombatController が取得できませんでした！");
+                    point.SpawnEnemies(1);
+                }
+            }
+            else
+            {
+                Debug.Log("[Sphere Debug] TypeがEnemyではありません。");
+            }
+        }
+        else
+        {
+            // RespawnPointスクリプトがついていないオブジェクトに当たった場合
+            // Debug.Log("[Sphere Debug] これはRespawnPointではありません。");
         }
     }
 
-    // 球体のTriggerから出たとき（オプション：球が消えたり移動したら隠す場合）
     private void OnTriggerExit(Collider other)
     {
         HiddenObject hidden = other.GetComponent<HiddenObject>();
         if (hidden != null)
         {
-            // ここをコメントアウトすれば、一度見つけたお宝は出しっぱなしにできます
-            //hidden.Hide();
+            // hidden.Hide();
         }
-    }
-
-    // 球体が消滅するとき（Destroyされたとき）の処理
-    void Update()
-    {
-        // 毎フレーム、この球体の現在位置をシェーダー全体に伝える
-        // これにより、球体が動いてもテクスチャの変化が追従します
-        Shader.SetGlobalVector(GlobalSphereCenterID, transform.position);
     }
 
     private void OnDestroy()
     {
-        // 球体が消えたら、影響範囲を0にして元に戻す（または遠くへ飛ばす）
-        // ここでは半径をマイナスにして効果を打ち消す例です
+        // シェーダーの効果を消す
         Shader.SetGlobalFloat(GlobalSphereRadiusID, -1f);
     }
 }
