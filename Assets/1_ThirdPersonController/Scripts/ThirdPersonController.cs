@@ -467,6 +467,35 @@ namespace StarterAssets
                 _input.ult = false;
             }
         }
+        /// <summary>
+        /// 交代時に回転角度と速度を同期させる
+        /// </summary>
+        public void SyncState(float targetYaw, float targetPitch, float rotationVelocity)
+        {
+            _cinemachineTargetYaw = targetYaw;
+            _cinemachineTargetPitch = targetPitch;
+            _rotationVelocity = rotationVelocity;
+
+            // 速度はいったんリセットして暴走を防ぐ
+            _speed = 0f;
+            _verticalVelocity = 0f;
+
+            // 入力もリセット
+            if (_input != null)
+            {
+                _input.move = Vector2.zero;
+                _input.look = Vector2.zero;
+                _input.jump = false;
+                _input.sprint = false;
+            }
+        }
+
+        /// <summary>
+        /// 現在のカメラ回転情報を取得するためのプロパティ
+        /// </summary>
+        public float CinemachineTargetYaw => _cinemachineTargetYaw;
+        public float CinemachineTargetPitch => _cinemachineTargetPitch;
+        public float RotationVelocity => _rotationVelocity;
 
     }
 }
