@@ -33,11 +33,11 @@ MonoBehaviour:
   lightingDurationTime: 60
   lightingCost: 5
   skillAnimationTrigger: Skill
-  skillDamageMultiplier: 1.5
+  skillDamageMultiplier: 1.7
   skillCooldownTime: 6
   skillCost: 10
   ultAnimationTrigger: Ult
-  ultDamageMultiplier: 2
+  ultDamageMultiplier: 2.4
   ultCooldownTime: 60
   ultDurationTime: 5
   ultCost: 20
