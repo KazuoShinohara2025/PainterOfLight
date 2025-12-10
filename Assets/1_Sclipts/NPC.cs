@@ -1,28 +1,34 @@
-using System;
 using UnityEngine;
 
 public class NPC : MonoBehaviour, IInteractable
 {
+    [Header("UI参照")]
+    [Tooltip("このNPCに対応するショップUI")]
+    public NPCShopUI shopUI;
+
     private Animator animator;
-    private bool isTalk = false;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
     }
 
+    // インターフェース実装
     public void Interact(GameObject player)
     {
-        ToggleTalk();
-    }
+        // UIが開いていないときだけ実行
+        if (shopUI != null && !shopUI.IsShopOpen)
+        {
+            // プレイヤーの方を向く（オプション）
+            Vector3 lookPos = player.transform.position;
+            lookPos.y = transform.position.y;
+            transform.LookAt(lookPos);
 
-    private void ToggleTalk()
-    {
-        isTalk = !isTalk;
-        string animationName = isTalk ? "Talk" : "Ignore";
+            // 会話アニメーション
+            if (animator != null) animator.Play("Talk");
 
-        animator.Play(animationName);
-
-        Debug.Log($"Talk is now {(isTalk ? "talk" : "ignore")}");
+            // UIを開く
+            shopUI.StartConversation(player);
+        }
     }
 }

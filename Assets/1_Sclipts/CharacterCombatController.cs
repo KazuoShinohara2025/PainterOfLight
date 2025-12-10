@@ -218,12 +218,29 @@ public class CharacterCombatController : MonoBehaviour
         return false;
     }
 
+    // 既存の GainRewards を確認し、マイナス値でも動くようにする
     public void GainRewards(int exp, int gold)
     {
         if (isDead) return;
         CurrentExp += exp;
         CurrentGold += gold;
-        Debug.Log($"報酬獲得! Exp: +{exp}, Gold: +{gold}");
+
+        // マイナスになってもUI表示でおかしくならないように0で止めるならMathf.Maxを入れる
+        // if (CurrentExp < 0) CurrentExp = 0;
+        // if (CurrentGold < 0) CurrentGold = 0;
+
+        Debug.Log($"リソース変動: Exp {exp}, Gold {gold}");
+    }
+
+    // ★追加: 全回復メソッド
+    public void FullRecovery()
+    {
+        if (characterStatus != null)
+        {
+            CurrentHp = characterStatus.maxHp;
+            CurrentMana = characterStatus.maxMana;
+            Debug.Log("HP/Mana Full Recovered");
+        }
     }
 
     // --- アイテム強化 ---
@@ -340,6 +357,7 @@ public class CharacterCombatController : MonoBehaviour
     {
         return baseVal * multiplier;
     }
+
 
     public void EnableAttackCollider() { if (weaponCollider != null) weaponCollider.enabled = true; }
     public void DisableAttackCollider() { if (weaponCollider != null) weaponCollider.enabled = false; }
