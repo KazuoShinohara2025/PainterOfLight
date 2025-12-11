@@ -111,11 +111,35 @@ public class StatusMenuController : MonoBehaviour
 
     public void OnResetButtonClicked()
     {
-        // シーン遷移前に時間を動かす
+        // 時間を再開
         Time.timeScale = 1f;
+
+        // ★追加: 全キャラクターのステータスを初期化
+        ResetAllCharactersData();
 
         // タイトルシーンへ移動
         SceneManager.LoadScene("TitleScene");
+    }
+
+    // ★追加: 全キャラのリセット処理
+    private void ResetAllCharactersData()
+    {
+        // シーン上のCharacterSwapManagerを探して全キャラにアクセス
+        CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
+        if (swapManager != null && swapManager.characters != null)
+        {
+            foreach (var charObj in swapManager.characters)
+            {
+                if (charObj != null)
+                {
+                    var combat = charObj.GetComponent<CharacterCombatController>();
+                    if (combat != null && combat.characterStatus != null)
+                    {
+                        combat.characterStatus.ResetStatus();
+                    }
+                }
+            }
+        }
     }
 
     public void OnExitButtonClicked()

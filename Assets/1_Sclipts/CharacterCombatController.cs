@@ -247,7 +247,21 @@ public class CharacterCombatController : MonoBehaviour
     public void ApplyStatBoost(ItemData boostData) { /* 省略（以前のコードのまま） */ }
     public void ApplyRandomStatBoost(ItemData boostData, int count) { /* 省略（以前のコードのまま） */ }
 
+    // --- ★追加: レベルアップ処理 ---
+    public void LevelUp()
+    {
+        if (characterStatus != null)
+        {
+            characterStatus.lv += 1;
 
+            // レベルアップに伴うステータス上昇が必要ならここに記述
+            // 例: HPも少し増やす
+            // characterStatus.maxHp += 10;
+            // CurrentHp = characterStatus.maxHp; // 全回復させるなど
+
+            Debug.Log($"Level Up! {characterStatus.Name} is now Lv {characterStatus.lv}");
+        }
+    }
     // --- 被ダメージ処理 ---
     public void PlayerTakeDamage(float damage)
     {
@@ -274,7 +288,14 @@ public class CharacterCombatController : MonoBehaviour
         animator.SetTrigger("Die");
         Debug.Log("Player Died");
 
-        // ★追加：アニメーション終了待ちコルーチンを開始
+        // ★追加: HPが0になったのでステータスを初期化
+        // (注意: 3キャラいる場合、1人が死んだら全員リセットするかどうかはゲーム仕様によりますが、
+        //  ここでは自身のデータのみリセットします。全員リセットならManager等で行います)
+        if (characterStatus != null)
+        {
+            characterStatus.ResetStatus();
+        }
+
         StartCoroutine(WaitAndShowGameOver());
     }
 
