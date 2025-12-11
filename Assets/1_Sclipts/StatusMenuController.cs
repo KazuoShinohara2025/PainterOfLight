@@ -111,20 +111,17 @@ public class StatusMenuController : MonoBehaviour
 
     public void OnResetButtonClicked()
     {
-        // 時間を再開
         Time.timeScale = 1f;
 
-        // ★追加: 全キャラクターのステータスを初期化
+        // ★タイトルへ戻る時だけリセットを実行
         ResetAllCharactersData();
 
-        // タイトルシーンへ移動
         SceneManager.LoadScene("TitleScene");
     }
 
     // ★追加: 全キャラのリセット処理
     private void ResetAllCharactersData()
     {
-        // シーン上のCharacterSwapManagerを探して全キャラにアクセス
         CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
         if (swapManager != null && swapManager.characters != null)
         {

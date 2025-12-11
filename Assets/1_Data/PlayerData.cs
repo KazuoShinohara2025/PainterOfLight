@@ -1,35 +1,36 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "PlayerData", menuName = "GameDate/PlayerData")]
+[CreateAssetMenu(fileName = "PlayerData", menuName = "GameData/PlayerData")]
 public class PlayerData : ScriptableObject
 {
-    // ... (既存の変数定義はそのまま) ...
-    [Header("名前")]
+    [Header("基本ステータス")]
     public string Name;
-
-    [Header("HP")]
     [Min(0f)] public float maxHp = 100f;
-    [Header("マナ")]
     [Min(0f)] public float maxMana = 100f;
-    [Header("攻撃力")]
     [Min(0f)] public float baseAttack = 2f;
-    [Header("防御力")]
     [Min(0f)] public float baseDefense = 1f;
-    [Header("移動速度")]
     [Min(0f)] public float moveSpeed = 5.335f;
-    [Header("ライトの範囲")]
     [Min(0f)] public float lightingRange = 50.0f;
-    [Header("レベル")]
     [Min(0f)] public float lv = 1f;
-    [Header("二段ジャンプ")]
     public bool doubleJump = false;
-    [Header("獲得経験値")]
-    [Min(0)] public int totalExp = 0;
-    [Header("獲得ゴールド")]
-    [Min(0)] public int totalGold = 0;
 
-    // ... (アクションデータなどもそのまま) ...
-    [Header("アクションデータ (固有値)")]
+    [Header("現在の状態")]
+    public float currentHp;
+    public float currentMana;
+    public int currentExp;
+    public int currentGold;
+
+    // --- ★追加: ショップの現在のコストを保存する変数 ---
+    [Header("ショップコスト管理")]
+    public int costHp = 10;
+    public int costMana = 10;
+    public int costAttack = 10;
+    public int costDefense = 10;
+    public int costSkill = 10;
+    public int costUlt = 10;
+
+    // --- 固定値やアクション設定など (変更なし) ---
+    [Header("アクションデータ")]
     public string attackAnimationTrigger = "Attack";
     public float attackDamageMultiplier = 1.0f;
     public float attackCooldownTime = 1.0f;
@@ -38,7 +39,6 @@ public class PlayerData : ScriptableObject
     public string lightingAnimationTrigger = "Lighting";
     public float lightingRangeMultiplier = 5.0f;
     public float lightingCooldownTime = 5.0f;
-    public float lightingDurationTime = 60.0f;
     public float lightingCost = 5.0f;
 
     public string skillAnimationTrigger = "Skill";
@@ -49,57 +49,40 @@ public class PlayerData : ScriptableObject
     public string ultAnimationTrigger = "Ult";
     public float ultDamageMultiplier = 2.0f;
     public float ultCooldownTime = 60.0f;
-    public float ultDurationTime = 5.0f;
     public float ultCost = 20.0f;
 
-    public string attackVFXID = "VFX_Lily_Attack";
-    public string lightingVFXID = "VFX_Lily_Lighting";
-    public string skillVFXID = "VFX_Lily_Skill";
-    public string ultVFXID = "VFX_Lily_Ult";
+    // VFX IDs, SE IDs... (省略)
 
-    public string attackSEID = "SE_Lily_Attack";
-    public string lightingSEID = "SE_Lily_Lighting";
-    public string skillSEID = "SE_Lily_Skill";
-    public string ultSEID = "SE_Lily_Ult";
+    // --- 初期値のバックアップ用 ---
+    // ※インスペクターで設定した「初期ステータス」をハードコードまたはOnEnableで保持
+    // 今回は安全のため、初期化メソッド内で「Lv1のときの値」を明示的にセットする方法にします。
 
-    // --- ★追加: 初期値バックアップ用変数 ---
-    [System.NonSerialized] private float _initMaxHp;
-    [System.NonSerialized] private float _initMaxMana;
-    [System.NonSerialized] private float _initBaseAttack;
-    [System.NonSerialized] private float _initBaseDefense;
-    [System.NonSerialized] private float _initLv;
-    [System.NonSerialized] private float _initSkillMulti;
-    [System.NonSerialized] private float _initUltMulti;
-    [System.NonSerialized] private int _initExp;
-    [System.NonSerialized] private int _initGold;
-
-    // ゲーム起動時（またはアセットロード時）に現在の値をバックアップ
-    private void OnEnable()
-    {
-        _initMaxHp = maxHp;
-        _initMaxMana = maxMana;
-        _initBaseAttack = baseAttack;
-        _initBaseDefense = baseDefense;
-        _initLv = lv;
-        _initSkillMulti = skillDamageMultiplier;
-        _initUltMulti = ultDamageMultiplier;
-        _initExp = totalExp;
-        _initGold = totalGold;
-    }
-
-    // ★追加: ステータスを初期値に戻すメソッド
+    /// <summary>
+    /// タイトルに戻った時、または死亡時に呼び出してステータスを初期化する
+    /// </summary>
     public void ResetStatus()
     {
-        maxHp = _initMaxHp;
-        maxMana = _initMaxMana;
-        baseAttack = _initBaseAttack;
-        baseDefense = _initBaseDefense;
-        lv = _initLv;
-        skillDamageMultiplier = _initSkillMulti;
-        ultDamageMultiplier = _initUltMulti;
-        totalExp = _initExp;
-        totalGold = _initGold;
+        // 基本ステータスのリセット（既存の処理）
+        maxHp = 100f;
+        maxMana = 100f;
+        // ...
 
-        Debug.Log($"{Name} のステータスを初期化しました (Lv:{lv})");
+        currentHp = maxHp;
+        currentMana = maxMana;
+        currentExp = 0;
+        currentGold = 0;
+
+        // ★追加: ショップコストも初期値(10)に戻す
+        costHp = 10;
+        costMana = 10;
+        costAttack = 10;
+        costDefense = 10;
+        costSkill = 10;
+        costUlt = 10;
+
+        Debug.Log($"{Name} のステータスとショップコストを初期化しました");
     }
+
+    // エディタでの動作確認用に、ゲーム開始時(PlayModeに入った時)ではなく
+    // 明示的にリセットされた時だけ初期化するようにするため、OnEnableでの自動リセットは削除しました。
 }

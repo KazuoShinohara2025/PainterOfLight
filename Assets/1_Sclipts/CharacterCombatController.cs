@@ -1,9 +1,10 @@
 using System;
-using System.Collections; // ★追加：ここが抜けているとIEnumeratorエラーになります
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using StarterAssets;
 using System.Linq;
+using System.Collections.Generic; // List用
 
 public class CharacterCombatController : MonoBehaviour
 {
@@ -44,11 +45,26 @@ public class CharacterCombatController : MonoBehaviour
     private PlayerInput playerInput;
     private StarterAssetsInputs starterAssetsInputs; // 移動を止めるために取得
 
-    // --- ステータス公開プロパティ ---
-    public float CurrentHp { get; private set; }
-    public float CurrentMana { get; private set; }
-    public int CurrentExp { get; private set; }
-    public int CurrentGold { get; private set; }
+    public float CurrentHp
+    {
+        get { return characterStatus != null ? characterStatus.currentHp : 0; }
+        private set { if (characterStatus != null) characterStatus.currentHp = value; }
+    }
+    public float CurrentMana
+    {
+        get { return characterStatus != null ? characterStatus.currentMana : 0; }
+        private set { if (characterStatus != null) characterStatus.currentMana = value; }
+    }
+    public int CurrentExp
+    {
+        get { return characterStatus != null ? characterStatus.currentExp : 0; }
+        private set { if (characterStatus != null) characterStatus.currentExp = value; }
+    }
+    public int CurrentGold
+    {
+        get { return characterStatus != null ? characterStatus.currentGold : 0; }
+        private set { if (characterStatus != null) characterStatus.currentGold = value; }
+    }
 
     private bool isDead = false;
     private bool isMovementLocked = false; // 移動ロック用フラグ
@@ -70,10 +86,21 @@ public class CharacterCombatController : MonoBehaviour
     {
         if (characterStatus != null)
         {
-            CurrentHp = characterStatus.maxHp;
-            CurrentMana = characterStatus.maxMana;
-            CurrentExp = characterStatus.totalExp;
-            CurrentGold = characterStatus.totalGold;
+            // ★重要: Startでの初期化処理を削除または変更
+            // 以前はここで CurrentHp = maxHp; としていましたが、
+            // シーン遷移でHPが回復してしまうため削除します。
+
+            // もしデータが空っぽ（0）だった場合のみ、緊急で初期化する処理を入れる
+            if (characterStatus != null)
+            {
+                if (characterStatus.maxHp <= 0) characterStatus.ResetStatus();
+
+                // 初回起動時などで現在HPが0以下なら満タンにする（ゲームオーバーからの復帰などの対策）
+                if (characterStatus.currentHp <= 0)
+                {
+                    characterStatus.currentHp = characterStatus.maxHp;
+                }
+            }
         }
     }
 
@@ -222,14 +249,12 @@ public class CharacterCombatController : MonoBehaviour
     public void GainRewards(int exp, int gold)
     {
         if (isDead) return;
+
+        // プロパティ経由でPlayerDataに加算（マイナスの場合は減算になる）
         CurrentExp += exp;
         CurrentGold += gold;
 
-        // マイナスになってもUI表示でおかしくならないように0で止めるならMathf.Maxを入れる
-        // if (CurrentExp < 0) CurrentExp = 0;
-        // if (CurrentGold < 0) CurrentGold = 0;
-
-        Debug.Log($"リソース変動: Exp {exp}, Gold {gold}");
+        Debug.Log($"リソース変動: Exp {exp}, Gold {gold} -> Current Exp:{CurrentExp}, Gold:{CurrentGold}");
     }
 
     // ★追加: 全回復メソッド
@@ -239,26 +264,107 @@ public class CharacterCombatController : MonoBehaviour
         {
             CurrentHp = characterStatus.maxHp;
             CurrentMana = characterStatus.maxMana;
-            Debug.Log("HP/Mana Full Recovered");
+            Debug.Log("HP/Mana Full Recovered!");
         }
     }
 
     // --- アイテム強化 ---
-    public void ApplyStatBoost(ItemData boostData) { /* 省略（以前のコードのまま） */ }
-    public void ApplyRandomStatBoost(ItemData boostData, int count) { /* 省略（以前のコードのまま） */ }
+    public void ApplyStatBoost(ItemData boostData)
+    {
+        if (characterStatus == null || boostData == null) return;
 
-    // --- ★追加: レベルアップ処理 ---
+        // 1. 最大値(永続ステータス)を強化
+        characterStatus.maxHp += boostData.hp;
+        characterStatus.maxMana += boostData.mana;
+        characterStatus.baseAttack += boostData.baseAttack;
+        characterStatus.baseDefense += boostData.baseDefense;
+        characterStatus.skillDamageMultiplier += boostData.skillDamageMultiplier;
+        characterStatus.ultDamageMultiplier += boostData.ultDamageMultiplier;
+
+        // 2. 現在値も回復/加算させる
+        // (最大HPが増えた分、現在のHPも増やしてあげる)
+        if (boostData.hp > 0) CurrentHp += boostData.hp;
+        if (boostData.mana > 0) CurrentMana += boostData.mana;
+
+        Debug.Log($"ステータス強化完了: {characterStatus.Name}");
+    }
+    public void ApplyRandomStatBoost(ItemData boostData, int count)
+    {
+        if (characterStatus == null || boostData == null) return;
+
+        // 0:HP, 1:Mana, 2:Attack, 3:Defense, 4:SkillMulti, 5:UltMulti, 6:Gold
+        List<int> statTypes = new List<int> { 0, 1, 2, 3, 4, 5, 6 };
+        var selectedTypes = statTypes.OrderBy(x => System.Guid.NewGuid()).Take(count).ToList();
+
+        Debug.Log($"--- ランダムステータス強化 ({count}種) ---");
+
+        foreach (int type in selectedTypes)
+        {
+            switch (type)
+            {
+                case 0: // HP
+                    if (boostData.hp > 0)
+                    {
+                        characterStatus.maxHp += boostData.hp;
+                        CurrentHp += boostData.hp; // 現在値も増やす
+                        Debug.Log($"当たり: HP +{boostData.hp}");
+                    }
+                    break;
+                case 1: // Mana
+                    if (boostData.mana > 0)
+                    {
+                        characterStatus.maxMana += boostData.mana;
+                        CurrentMana += boostData.mana; // 現在値も増やす
+                        Debug.Log($"当たり: Mana +{boostData.mana}");
+                    }
+                    break;
+                case 2: // Attack
+                    if (boostData.baseAttack > 0)
+                    {
+                        characterStatus.baseAttack += boostData.baseAttack;
+                        Debug.Log($"当たり: 攻撃力 +{boostData.baseAttack}");
+                    }
+                    break;
+                case 3: // Defense
+                    if (boostData.baseDefense > 0)
+                    {
+                        characterStatus.baseDefense += boostData.baseDefense;
+                        Debug.Log($"当たり: 防御力 +{boostData.baseDefense}");
+                    }
+                    break;
+                case 4: // Skill
+                    if (boostData.skillDamageMultiplier > 0)
+                    {
+                        characterStatus.skillDamageMultiplier += boostData.skillDamageMultiplier;
+                        Debug.Log($"当たり: スキル倍率 +{boostData.skillDamageMultiplier}");
+                    }
+                    break;
+                case 5: // Ult
+                    if (boostData.ultDamageMultiplier > 0)
+                    {
+                        characterStatus.ultDamageMultiplier += boostData.ultDamageMultiplier;
+                        Debug.Log($"当たり: ウルト倍率 +{boostData.ultDamageMultiplier}");
+                    }
+                    break;
+                case 6: // Gold
+                    if (boostData.totalGold > 0)
+                    {
+                        CurrentGold += boostData.totalGold;
+                        Debug.Log($"当たり: ゴールド +{boostData.totalGold}");
+                    }
+                    break;
+            }
+        }
+    }
+
+    // --- レベルアップ処理 ---
     public void LevelUp()
     {
         if (characterStatus != null)
         {
             characterStatus.lv += 1;
-
-            // レベルアップに伴うステータス上昇が必要ならここに記述
-            // 例: HPも少し増やす
-            // characterStatus.maxHp += 10;
-            // CurrentHp = characterStatus.maxHp; // 全回復させるなど
-
+            // レベルアップで全回復させたいならここに入れる
+            // characterStatus.currentHp = characterStatus.maxHp; 
             Debug.Log($"Level Up! {characterStatus.Name} is now Lv {characterStatus.lv}");
         }
     }
@@ -266,10 +372,8 @@ public class CharacterCombatController : MonoBehaviour
     public void PlayerTakeDamage(float damage)
     {
         if (isDead) return;
-
         float defense = characterStatus != null ? characterStatus.baseDefense : 0;
         float finalDamage = Mathf.Max(0, damage - defense);
-
         CurrentHp -= finalDamage;
         Debug.Log($"Player HP Reduced: {CurrentHp} (Damage: {finalDamage})");
 
@@ -288,9 +392,7 @@ public class CharacterCombatController : MonoBehaviour
         animator.SetTrigger("Die");
         Debug.Log("Player Died");
 
-        // ★追加: HPが0になったのでステータスを初期化
-        // (注意: 3キャラいる場合、1人が死んだら全員リセットするかどうかはゲーム仕様によりますが、
-        //  ここでは自身のデータのみリセットします。全員リセットならManager等で行います)
+        // ★HPが0になったのでステータスを初期化
         if (characterStatus != null)
         {
             characterStatus.ResetStatus();
