@@ -1258,6 +1258,10 @@ MonoBehaviour:
   detectionRange: 10
   attackRange: 1.5
   attackCooldown: 3
+  isBoss: 0
+  OnDeath:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5738786246469573623 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -1693546492923637869, guid: 7204ce8375bbb664b89cc51b7db49c22, type: 3}
