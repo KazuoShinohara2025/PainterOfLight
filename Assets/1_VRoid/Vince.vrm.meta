@@ -2,7 +2,112 @@ fileFormatVersion: 2
 guid: 0a870266ef4fd724bbf4bc3074080404
 ScriptedImporter:
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _01
+    second: {fileID: 2808317123517323342, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _02
+    second: {fileID: -4960794875819661355, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _03
+    second: {fileID: -4407734190278982866, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _04
+    second: {fileID: 5134788550220458975, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _05.normal
+    second: {fileID: 5416188534394320506, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _06
+    second: {fileID: -5496234832007829451, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _07
+    second: {fileID: -5386000052843801069, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _09
+    second: {fileID: -7991923158731760435, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _10
+    second: {fileID: 8871107045552810907, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _11.normal
+    second: {fileID: -3368437746838795792, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _12
+    second: {fileID: 2544008388570112, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _13
+    second: {fileID: -6196267951596334405, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _14
+    second: {fileID: -1766637601443850223, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _15
+    second: {fileID: 972583040376352481, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _16
+    second: {fileID: 4847422638766700981, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _17
+    second: {fileID: -5973952276248412668, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _18
+    second: {fileID: 2016903317187815046, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _19
+    second: {fileID: 1899353872833492360, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _20
+    second: {fileID: -5574164760274066867, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _21
+    second: {fileID: -2157043343687739283, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
+  - first:
+      type: UnityEngine:Texture
+      assembly: UnityEngine.CoreModule
+      name: _22
+    second: {fileID: -3071153914523077775, guid: 0a870266ef4fd724bbf4bc3074080404, type: 3}
   serializedVersion: 2
   userData: 
   assetBundleName: 

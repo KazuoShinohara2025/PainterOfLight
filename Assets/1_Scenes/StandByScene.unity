@@ -8846,8 +8846,8 @@ GameObject:
   - component: {fileID: 563421929}
   - component: {fileID: 563421933}
   - component: {fileID: 563421932}
-  - component: {fileID: 563421931}
   - component: {fileID: 563421930}
+  - component: {fileID: 563421934}
   m_Layer: 9
   m_Name: Double Door
   m_TagString: Door
@@ -8882,29 +8882,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc87736a30690d4285525fad5c54340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Door
-  sceneToLoad: 
-  uiPanel: {fileID: 0}
---- !u!65 &563421931
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 563421928}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.02, y: 0.6808262, z: 0.23000002}
-  m_Center: {x: -0.0100002885, y: 0.055077583, z: -0.11499998}
+  sceneToLoad: BossScene
+  uiPanel: {fileID: 2097431430}
 --- !u!23 &563421932
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8960,6 +8939,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 563421928}
+  m_Mesh: {fileID: 5194340702381293203, guid: d05fa8828be199048bb709f826cc3c53, type: 3}
+--- !u!64 &563421934
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563421928}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
   m_Mesh: {fileID: 5194340702381293203, guid: d05fa8828be199048bb709f826cc3c53, type: 3}
 --- !u!1 &577918348
 GameObject:
@@ -26020,8 +26021,8 @@ GameObject:
   - component: {fileID: 1642585943}
   - component: {fileID: 1642585948}
   - component: {fileID: 1642585947}
-  - component: {fileID: 1642585946}
   - component: {fileID: 1642585945}
+  - component: {fileID: 1642585949}
   m_Layer: 0
   m_Name: Double Door
   m_TagString: Door
@@ -26056,29 +26057,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc87736a30690d4285525fad5c54340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Door
-  sceneToLoad: 
-  uiPanel: {fileID: 0}
---- !u!65 &1642585946
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642585942}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.02, y: 0.6808262, z: 0.23000002}
-  m_Center: {x: -0.0100002885, y: 0.055077583, z: -0.11499998}
+  sceneToLoad: BossScene
+  uiPanel: {fileID: 2097431430}
 --- !u!23 &1642585947
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -26134,6 +26114,28 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642585942}
+  m_Mesh: {fileID: 5194340702381293203, guid: d05fa8828be199048bb709f826cc3c53, type: 3}
+--- !u!64 &1642585949
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1642585942}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
   m_Mesh: {fileID: 5194340702381293203, guid: d05fa8828be199048bb709f826cc3c53, type: 3}
 --- !u!4 &1651436212 stripped
 Transform:

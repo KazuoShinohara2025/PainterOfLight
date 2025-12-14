@@ -11,18 +11,17 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
-        // ... (冒頭の変数定義などは変更なし) ...
         [Header("ScriptableObject Data")]
         public PlayerData characterStatus;
 
         [Header("Player")]
-        [Header("Interaction")]
-        private InteractionManager _interactionManager;
-
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
+        [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f;
+        [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)] public float RotationSmoothTime = 0.12f;
+        [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
 
         public AudioClip LandingAudioClip;
@@ -30,24 +29,37 @@ namespace StarterAssets
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
 
         [Space(10)]
+        [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
+        [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         public float Gravity = -15.0f;
 
         [Space(10)]
+        [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
         public float JumpTimeout = 0.50f;
+        [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
         [Header("Player Grounded")]
+        [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
         public bool Grounded = true;
+        [Tooltip("Useful for rough ground")]
         public float GroundedOffset = -0.14f;
+        [Tooltip("The radius of the grounded check. Should match the radius of the CharacterController")]
         public float GroundedRadius = 0.28f;
+        [Tooltip("What layers the character uses as ground")]
         public LayerMask GroundLayers;
 
         [Header("Cinemachine")]
+        [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
         public GameObject CinemachineCameraTarget;
+        [Tooltip("How far in degrees can you move the camera up")]
         public float TopClamp = 70.0f;
+        [Tooltip("How far in degrees can you move the camera down")]
         public float BottomClamp = -30.0f;
+        [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
         public float CameraAngleOverride = 0.0f;
+        [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
         // cinemachine
@@ -80,6 +92,7 @@ namespace StarterAssets
         private CharacterController _controller;
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
+        private InteractionManager _interactionManager;
 
         private const float _threshold = 0.01f;
         private bool _hasAnimator;
@@ -98,6 +111,7 @@ namespace StarterAssets
 
         private void Awake()
         {
+            // get a reference to our main camera
             if (_mainCamera == null)
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -106,8 +120,8 @@ namespace StarterAssets
 
         private void Start()
         {
-            _interactionManager = GetComponent<InteractionManager>();
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            _interactionManager = GetComponent<InteractionManager>();
 
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
@@ -116,6 +130,8 @@ namespace StarterAssets
             _playerInput = GetComponent<PlayerInput>();
 #endif
             AssignAnimationIDs();
+
+            // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
         }
@@ -131,7 +147,7 @@ namespace StarterAssets
             Attack();
             Lighting();
             Skill();
-            Ult(); // ここで呼び出されます
+            Ult(); // Ult修正済み
         }
 
         private void LateUpdate()
@@ -166,6 +182,7 @@ namespace StarterAssets
             if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+
                 _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
                 _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
             }
@@ -180,6 +197,7 @@ namespace StarterAssets
         private void Move()
         {
             float targetSpeed = _input.sprint ? characterStatus.moveSpeed : MoveSpeed;
+
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
             float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -211,6 +229,7 @@ namespace StarterAssets
                     RotationSmoothTime);
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
+
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
@@ -298,6 +317,8 @@ namespace StarterAssets
                 GroundedRadius);
         }
 
+        // --- 以下、Action系メソッド ---
+
         private void Interact()
         {
             if (_input.interact)
@@ -306,15 +327,11 @@ namespace StarterAssets
             }
         }
 
-        // --- 攻撃系のメソッド ---
-        // CharacterCombatController側でマナ管理・アニメーション再生を行うため、
-        // こちらでは入力フラグの消費のみ行う（または何もしない）形にします。
-
         private void Attack()
         {
             if (_input.attack)
             {
-                _animator.SetTrigger("Attack"); // Attackは今回はそのまま（要望により）
+                _animator.SetTrigger("Attack");
                 Debug.Log("attack");
                 _input.attack = false;
             }
@@ -342,22 +359,37 @@ namespace StarterAssets
 
         private void Ult()
         {
-            // --- 修正箇所: Ultの処理 ---
-            // 以前はここで _animator.SetTrigger("Ult") を呼んでいましたが、
-            // それだとCharacterCombatControllerのマナチェックを無視して再生されてしまいます。
-            // 処理を削除し、CharacterCombatControllerに任せます。
-
+            // UltのトリガーはCharacterCombatControllerのマナ管理に任せるため削除
             if (_input.ult)
             {
-                // ここでのアニメーション再生命令を削除しました
-                // _animator.SetTrigger("Ult"); 
-
-                Debug.Log("Ult Input Detected (Handled by CombatController)");
-                _input.ult = false; // 入力フラグだけ消費してリセット
+                Debug.Log("Ult Input (To CombatController)");
+                _input.ult = false;
             }
         }
 
-        // --- CharacterSwapManager用の同期メソッド（以前追加したもの） ---
+        // --- ★復元: アニメーションイベント用メソッド ---
+        public void OnFootstep(AnimationEvent animationEvent)
+        {
+            if (animationEvent.animatorClipInfo.weight > 0.5f)
+            {
+                if (FootstepAudioClips.Length > 0)
+                {
+                    var index = Random.Range(0, FootstepAudioClips.Length);
+                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                }
+            }
+        }
+
+        public void OnLand(AnimationEvent animationEvent)
+        {
+            if (animationEvent.animatorClipInfo.weight > 0.5f)
+            {
+                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            }
+        }
+        // ------------------------------------------
+
+        // --- CharacterSwapManager用 ---
         public void SyncState(float targetYaw, float targetPitch, float rotationVelocity)
         {
             _cinemachineTargetYaw = targetYaw;
