@@ -103,6 +103,7 @@ Assets/
 UnityのProjectウィンドウにて下記のフォルダを右クリックして、Reimport を選択してください。
 
 ・Assets/UniGLTF
+
 ・Assets/VRM10 （または VRM）
 
 同様に3Dモデル（.vrm）も再インポートします。
