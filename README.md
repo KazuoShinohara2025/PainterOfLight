@@ -12,6 +12,7 @@
 - [進捗メモ](#progress-notes)
 - [開発ルール](#development-rules)
 - [発表内容（予定）](#presentation-plan)
+- [3Dモデルが正常に表示されない場合の解決策](#problem-solution)
 
 ---
 
@@ -87,7 +88,7 @@ Assets/
 ```
 ---
 
-## 発表内容（予定） <a id="presentation-plan"></a>
+## 発表内容 <a id="presentation-plan"></a>
 
 | 項目 | 内容 |
 |------|------|
@@ -95,6 +96,32 @@ Assets/
 | **ゲーム紹介** | 音と光を頼りにアイテムを探し、取得したアイテムで自身強化し続けるを3Dアクションゲーム |
 | **アピールポイント** | 光を照らすことで視界を確保する演出と、音によるヒント表示を組み合わせた誘導演出 |
 | **頑張った点** | DOTweenを活用した演出とマップ、キャラクター、UIの見た目による世界観の統一 |
+
+---
+## 3Dモデルが正常に表示されない場合の解決策 <a id="#problem-solution"></a>
+
+UnityのProjectウィンドウにて下記のフォルダを右クリックして、Reimport を選択してください。
+・Assets/UniGLTF
+・Assets/VRM10 （または VRM）
+
+同様に3Dモデル（.vrm）も再インポートします。
+Assets/1_VRoid/Lily.vrm を 右クリックし、Reimport を選択します。
+
+上記の手順で表示されない場合は、GitからLFSの設定を行います。
+GitHub Desktopなどからメニューバーの 「Repository」 > 「Show in Explorer」 をクリックし、コマンドプロンプトを開きます。
+Gitがインストールされていない場合は、Unable to local Gitと表示されているポップアップから、Install Gitボタンを押してダウンロードしてください。
+コマンドプロンプトが起動できて、プロジェクトフォルダを開けている場合は、下記の手順でLFSの実データをダウンロードします。
+
+1.LFS が有効か確認します。
+git lfs install
+
+2.最新の変更をプルします。
+git pull
+
+3.LFSの実データをダウンロードします。
+git lfs pull
+
+4.再度、UniGLTF、VRM10、3Dモデル（.vrm）のReimportを行ってください。
 
 ---
 
