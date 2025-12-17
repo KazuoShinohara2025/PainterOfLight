@@ -11,7 +11,7 @@
 - [進行スケジュール（目安）](#schedule)
 - [進捗メモ](#progress-notes)
 - [開発ルール](#development-rules)
-- [発表内容（予定）](#presentation-plan)
+- [発表内容](#presentation-plan)
 - [3Dモデルが正常に表示されない場合の解決策](#problem-solution)
 
 ---
@@ -101,15 +101,20 @@ Assets/
 ## 3Dモデルが正常に表示されない場合の解決策 <a id="#problem-solution"></a>
 
 UnityのProjectウィンドウにて下記のフォルダを右クリックして、Reimport を選択してください。
+
 ・Assets/UniGLTF
 ・Assets/VRM10 （または VRM）
 
 同様に3Dモデル（.vrm）も再インポートします。
+
 Assets/1_VRoid/Lily.vrm を 右クリックし、Reimport を選択します。
 
+
 上記の手順で表示されない場合は、GitからLFSの設定を行います。
+
 GitHub Desktopなどからメニューバーの 「Repository」 > 「Show in Explorer」 をクリックし、コマンドプロンプトを開きます。
 Gitがインストールされていない場合は、Unable to local Gitと表示されているポップアップから、Install Gitボタンを押してダウンロードしてください。
+
 コマンドプロンプトが起動できて、プロジェクトフォルダを開けている場合は、下記の手順でLFSの実データをダウンロードします。
 
 1.LFS が有効か確認します。
