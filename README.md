@@ -98,6 +98,7 @@ Assets/
 | **頑張った点** | DOTweenを活用した演出とマップ、キャラクター、UIの見た目による世界観の統一 |
 
 ---
+
 ## 3Dモデルが正常に表示されない場合の解決策 <a id="#problem-solution"></a>
 
 UnityのProjectウィンドウにて下記のフォルダを右クリックして、Reimport を選択してください。
@@ -127,7 +128,9 @@ git pull
 3.LFSの実データをダウンロードします。
 git lfs pull
 
-4.再度、UniGLTF、VRM10、3Dモデル（.vrm）のReimportを行ってください。
+4.それでもなおUnable to local Gitと表示される場合は、PCを再起動を行ってください。インストールしたGitがPCに認識されていない状態が解消されるかもしれません。
+
+5.再度、UniGLTF、VRM10、3Dモデル（.vrm）のReimportを行ってください。
 
 ---
 
