@@ -23,19 +23,31 @@ public class StatusMenuController : MonoBehaviour
 
     [Header("Settings UI")]
     public Slider volumeSlider;
-    // Resolution関係の変数は削除しました
+    // bgmAudioSource は不要になったので削除しました
 
     void Start()
     {
         if (statusPanel != null) statusPanel.SetActive(false);
 
-        // 音量スライダーの初期化（Nullチェック付き）
+        // --- 音量設定の初期化 ---
         if (volumeSlider != null)
         {
-            volumeSlider.value = PlayerPrefs.GetFloat("Volume", 0.5f);
-        }
+            // 1. 前回の設定（セーブデータ）を読み込む。なければ 0.5 (50%)
+            float savedVolume = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
 
-        // Resolutionの初期化処理は削除しました
+            // 2. ゲーム全体の音量に適用
+            AudioListener.volume = savedVolume;
+
+            // 3. スライダーの位置を合わせる
+            volumeSlider.value = savedVolume;
+
+            // 4. スライダーを動かした時の処理を登録
+            volumeSlider.onValueChanged.AddListener(SetVolume);
+        }
+        else
+        {
+            Debug.LogWarning("StatusMenuController: Volume Sliderが設定されていません");
+        }
     }
 
     void Update()
@@ -81,7 +93,6 @@ public class StatusMenuController : MonoBehaviour
             {
                 PlayerData data = combatController.characterStatus;
 
-                // テキストコンポーネントがある場合のみ更新（Nullチェック）
                 if (nameText) nameText.text = data.Name;
                 if (levelText) levelText.text = $"{data.lv}";
 
@@ -99,27 +110,25 @@ public class StatusMenuController : MonoBehaviour
 
     // --- 設定関連 ---
 
+    // ★修正: ゲーム全体の音量を変更し、保存する
     public void SetVolume(float volume)
     {
         AudioListener.volume = volume;
-        PlayerPrefs.SetFloat("Volume", volume);
-    }
 
-    // SetResolution, SetFullscreen は削除しました
+        // 次回起動時のために保存
+        PlayerPrefs.SetFloat("MasterVolume", volume);
+        PlayerPrefs.Save();
+    }
 
     // --- Reset & Exit ---
 
     public void OnResetButtonClicked()
     {
         Time.timeScale = 1f;
-
-        // ★タイトルへ戻る時だけリセットを実行
         ResetAllCharactersData();
-
         SceneManager.LoadScene("TitleScene");
     }
 
-    // ★追加: 全キャラのリセット処理
     private void ResetAllCharactersData()
     {
         CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
@@ -142,11 +151,10 @@ public class StatusMenuController : MonoBehaviour
     public void OnExitButtonClicked()
     {
         Debug.Log("Game Quit");
-
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
-            Application.Quit();
+        Application.Quit();
 #endif
     }
 }

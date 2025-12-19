@@ -329,42 +329,42 @@ namespace StarterAssets
 
         private void Attack()
         {
-            if (_input.attack)
-            {
-                _animator.SetTrigger("Attack");
-                Debug.Log("attack");
-                _input.attack = false;
-            }
+            //if (_input.attack)
+            //{
+            //    _animator.SetTrigger("Attack");
+            //    Debug.Log("attack");
+            //    _input.attack = false;
+            //}
         }
 
         private void Lighting()
         {
-            if (_input.lighting)
-            {
-                _animator.SetTrigger("Lighting");
-                Debug.Log("lighting");
-                _input.lighting = false;
-            }
+            //if (_input.lighting)
+            //{
+            //    _animator.SetTrigger("Lighting");
+            //    Debug.Log("lighting");
+            //    _input.lighting = false;
+            //}
         }
 
         private void Skill()
         {
-            if (_input.skill)
-            {
-                _animator.SetTrigger("Skill");
-                Debug.Log("skill");
-                _input.skill = false;
-            }
+            //if (_input.skill)
+            //{
+            //    _animator.SetTrigger("Skill");
+            //    Debug.Log("skill");
+            //    _input.skill = false;
+            //}
         }
 
         private void Ult()
         {
             // UltのトリガーはCharacterCombatControllerのマナ管理に任せるため削除
-            if (_input.ult)
-            {
-                Debug.Log("Ult Input (To CombatController)");
-                _input.ult = false;
-            }
+            //if (_input.ult)
+            //{
+            //    Debug.Log("Ult Input (To CombatController)");
+            //    _input.ult = false;
+            //}
         }
 
         // --- ★復元: アニメーションイベント用メソッド ---

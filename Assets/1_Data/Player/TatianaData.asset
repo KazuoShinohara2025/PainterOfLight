@@ -21,8 +21,16 @@ MonoBehaviour:
   lightingRange: 10
   lv: 1
   doubleJump: 0
-  totalExp: 0
-  totalGold: 0
+  currentHp: 100
+  currentMana: 120
+  currentExp: 0
+  currentGold: 0
+  costHp: 10
+  costMana: 10
+  costAttack: 10
+  costDefense: 10
+  costSkill: 10
+  costUlt: 10
   attackAnimationTrigger: Attack
   attackDamageMultiplier: 1
   attackCooldownTime: 1
@@ -30,7 +38,6 @@ MonoBehaviour:
   lightingAnimationTrigger: Lighting
   lightingRangeMultiplier: 5
   lightingCooldownTime: 5
-  lightingDurationTime: 60
   lightingCost: 5
   skillAnimationTrigger: Skill
   skillDamageMultiplier: 1.5
@@ -39,13 +46,4 @@ MonoBehaviour:
   ultAnimationTrigger: Ult
   ultDamageMultiplier: 2
   ultCooldownTime: 60
-  ultDurationTime: 5
   ultCost: 20
-  attackVFXID: VFX_Lily_Attack
-  lightingVFXID: VFX_Lily_Lighting
-  skillVFXID: VFX_Lily_Skill
-  ultVFXID: VFX_Lily_Ult
-  attackSEID: SE_Lily_Attack
-  lightingSEID: SE_Lily_Lighting
-  skillSEID: SE_Lily_Skill
-  ultSEID: SE_Lily_Ult
