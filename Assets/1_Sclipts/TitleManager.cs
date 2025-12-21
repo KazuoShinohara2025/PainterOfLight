@@ -8,6 +8,6 @@ public class TitleManager : MonoBehaviour
     public void LoadStandByScene()
     {
         // "StandByScene" ‚Æ‚¢‚¤–¼‘O‚ÌƒV[ƒ“‚ğ“Ç‚İ‚Ş
-        SceneManager.LoadScene("StandByScene");
+        SceneTransitionManager.instance.LoadScene("StandByScene");
     }
 }

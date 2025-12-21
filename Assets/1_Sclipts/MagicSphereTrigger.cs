@@ -26,12 +26,14 @@ public class MagicSphereTrigger : MonoBehaviour
                     if (level < 1) level = 1;
 
                     // ポイントに敵出現を依頼
-                    point.SpawnEnemies(level);
+                    // ★修正: 引数を2つ渡すように変更 (出現希望数, 確率計算用のプレイヤーレベル)
+                    point.SpawnEnemies(level, level);
                 }
                 else
                 {
-                    // 万が一プレイヤーが取得できない場合の保険（1体出す）
-                    point.SpawnEnemies(1);
+                    // 万が一プレイヤーが取得できない場合の保険（1体出す、確率はLv1相当）
+                    // ★修正: 引数を2つ渡すように変更 (数1, レベル1)
+                    point.SpawnEnemies(1, 1);
                 }
             }
         }

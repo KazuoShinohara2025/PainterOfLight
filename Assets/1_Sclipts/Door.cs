@@ -107,7 +107,7 @@ public class Door : MonoBehaviour, IInteractable
         if (!string.IsNullOrEmpty(sceneToLoad))
         {
             Debug.Log($"ƒV[ƒ“ '{sceneToLoad}' ‚ÖˆÚ“®‚µ‚Ü‚·...");
-            SceneManager.LoadScene(sceneToLoad);
+            SceneTransitionManager.instance.LoadScene(sceneToLoad);
         }
         else
         {

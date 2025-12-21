@@ -22,7 +22,7 @@ public class MagicSphere : MonoBehaviour
         // 半径の情報をシェーダー全体に伝える
         Shader.SetGlobalFloat(GlobalSphereRadiusID, effectRadius);
 
-        // --- 修正: いきなりDestroyせず、時間経過後に「縮小処理」を開始する ---
+        // いきなりDestroyせず、時間経過後に「縮小処理」を開始する
         // DOTweenの遅延実行機能を使います
         DOVirtual.DelayedCall(lifeTime, StartShrinkDisappear).SetLink(gameObject);
     }
@@ -33,7 +33,7 @@ public class MagicSphere : MonoBehaviour
         Shader.SetGlobalVector(GlobalSphereCenterID, transform.position);
     }
 
-    // --- 追加: ゆっくり消える処理 ---
+    // --- ゆっくり消える処理 ---
     private void StartShrinkDisappear()
     {
         // スケールを0にするアニメーション
@@ -72,18 +72,20 @@ public class MagicSphere : MonoBehaviour
 
                 if (playerController != null)
                 {
-                    int level = Mathf.FloorToInt(playerController.characterStatus.lv); // ※本来はLv参照ですが、テスト用にHPなど確実に取れる値で試すのも手です
-                                                                                    // 正しくは: int level = Mathf.FloorToInt(playerController.characterStatus.lv);
-
+                    int level = Mathf.FloorToInt(playerController.characterStatus.lv);
                     if (level < 1) level = 1;
 
                     Debug.Log($"[Sphere Debug] 敵生成命令を出します。Lv: {level}");
-                    point.SpawnEnemies(level);
+
+                    // ★修正: 引数を2つ渡します (出現要求数, プレイヤーレベル)
+                    // 要求数が3を超えていても、RespawnPoint側で上限3にカットされるので問題ありません
+                    point.SpawnEnemies(level, level);
                 }
                 else
                 {
                     Debug.LogWarning("[Sphere Debug] 親オブジェクトから CharacterCombatController が取得できませんでした！");
-                    point.SpawnEnemies(1);
+                    // ★修正: こちらも引数を2つに (数1, レベル1)
+                    point.SpawnEnemies(1, 1);
                 }
             }
             else
@@ -94,7 +96,6 @@ public class MagicSphere : MonoBehaviour
         else
         {
             // RespawnPointスクリプトがついていないオブジェクトに当たった場合
-            // Debug.Log("[Sphere Debug] これはRespawnPointではありません。");
         }
     }
 
