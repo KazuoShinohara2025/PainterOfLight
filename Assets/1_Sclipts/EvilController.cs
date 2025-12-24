@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using System.Collections; // コルーチンに必要
 
 public class EvilController : MonoBehaviour
 {
@@ -8,12 +9,11 @@ public class EvilController : MonoBehaviour
     public EnemyData enemyData;
 
     [Header("参照")]
-    public Transform player; // インスペクターで設定不要（自動取得）
+    public Transform player;
     public NavMeshAgent agent;
     public Animator animator;
 
     [Header("武器設定")]
-    [Tooltip("BoxColliderがついている武器/手のオブジェクト")]
     public EvilWeapon weaponColliderScript;
     private Collider weaponCollider;
 
@@ -22,44 +22,41 @@ public class EvilController : MonoBehaviour
     public float attackRange = 1.5f;
     public float attackCooldown = 3f;
 
+    [Header("ダメージ設定")]
+    [Tooltip("ダメージを受けた時の硬直時間（秒）")]
+    public float damageStunDuration = 0.5f; // ★追加: アニメーションの長さに合わせて調整してください
+
     [Header("ボス設定")]
     public bool isBoss = false;
-    [Tooltip("死亡時に実行する処理")]
     public UnityEvent OnDeath;
 
     private float lastAttackTime;
-    private float currentHp = 100f; // 安全のため初期値を入れておく
+    private float currentHp = 100f;
     private bool isDead = false;
     private bool isAttacking = false;
+    private bool isDamaged = false;
+
     private CapsuleCollider myCollider;
 
     void Start()
     {
-        // コンポーネント取得（安全対策付き）
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponent<Animator>();
         myCollider = GetComponent<CapsuleCollider>();
 
-        // プレイヤーの検索
         FindPlayer();
 
-        // 武器コライダーのセットアップ
         if (weaponColliderScript != null)
         {
             weaponCollider = weaponColliderScript.GetComponent<Collider>();
             if (weaponCollider != null) weaponCollider.enabled = false;
         }
 
-        // ステータス反映 & レベルスケーリング
         if (enemyData != null)
         {
             agent.speed = enemyData.moveSpeed;
-
-            // まず基本値で初期化（スケーリング失敗時の保険）
             currentHp = enemyData.maxHp;
             if (weaponColliderScript != null) weaponColliderScript.damagePower = enemyData.attackPower;
-
-            // レベルに応じた強化を適用
             ApplyLevelScaling();
         }
     }
@@ -68,28 +65,30 @@ public class EvilController : MonoBehaviour
     {
         if (isDead) return;
 
-        // ★追加: プレイヤーを見失っている場合、再検索を試みる
         if (player == null)
         {
             FindPlayer();
-            // それでも見つからなければ、このフレームは処理をスキップ
             if (player == null) return;
         }
 
-        if (isAttacking)
+        // ★修正: ダメージ中や攻撃中は「移動判断」だけ止めるが、アニメーション更新は止めない
+        if (isAttacking || isDamaged)
         {
-            if (agent.enabled)
+            // Agentの動きを物理的に止める
+            if (agent.enabled && !agent.isStopped)
             {
                 agent.isStopped = true;
                 agent.velocity = Vector3.zero;
             }
+
+            // ★重要: 硬直中でもアニメーターのSpeedは更新し続ける（0にするため）
+            UpdateAnimation();
             return;
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        if (animator != null) animator.SetFloat("Speed", agent.velocity.magnitude);
-
+        // --- 状態遷移 ---
         if (distanceToPlayer <= attackRange)
         {
             AttackBehavior();
@@ -102,39 +101,41 @@ public class EvilController : MonoBehaviour
         {
             IdleBehavior();
         }
+
+        UpdateAnimation();
     }
 
-    // ★プレイヤーを探す専用メソッド
+    void UpdateAnimation()
+    {
+        if (animator == null || agent == null) return;
+
+        // 硬直中は強制的に 0 として扱う
+        if (isAttacking || isDamaged)
+        {
+            animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
+            return;
+        }
+
+        float currentSpeed = agent.velocity.magnitude;
+        if (currentSpeed < 0.1f) currentSpeed = 0f;
+
+        animator.SetFloat("Speed", currentSpeed, 0.1f, Time.deltaTime);
+    }
+
+    // （FindPlayer, ApplyLevelScaling は変更なしのため省略）
     void FindPlayer()
     {
-        // 1. CharacterSwapManager経由で現在のアクティブなキャラを探す（推奨）
-        CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
-        if (swapManager != null)
-        {
-            // SwapManagerが管理している「現在有効な」キャラを探すロジックが必要だが、
-            // ここでは簡易的にタグ検索を行う（SwapManagerがいればタグ検索も成功しやすいため）
-        }
-
-        // 2. Tagで探す
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        if (p != null)
-        {
-            player = p.transform;
-        }
+        if (p != null) player = p.transform;
     }
 
-    // レベルスケーリング（エラーガード付き）
     private void ApplyLevelScaling()
     {
         if (enemyData == null) return;
-
         try
         {
             float maxPlayerLv = 1f;
-
-            // CharacterSwapManagerを探す
             CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
-
             if (swapManager != null && swapManager.characters != null)
             {
                 foreach (var charObj in swapManager.characters)
@@ -144,42 +145,23 @@ public class EvilController : MonoBehaviour
                         var combat = charObj.GetComponent<CharacterCombatController>();
                         if (combat != null && combat.characterStatus != null)
                         {
-                            if (combat.characterStatus.lv > maxPlayerLv)
-                            {
-                                maxPlayerLv = combat.characterStatus.lv;
-                            }
+                            if (combat.characterStatus.lv > maxPlayerLv) maxPlayerLv = combat.characterStatus.lv;
                         }
                     }
                 }
             }
-            else
+            else if (player != null)
             {
-                // SwapManagerがない場合、現在のplayerから取得
-                if (player != null)
-                {
-                    var combat = player.GetComponent<CharacterCombatController>();
-                    if (combat != null && combat.characterStatus != null)
-                    {
-                        maxPlayerLv = combat.characterStatus.lv;
-                    }
-                }
+                var combat = player.GetComponent<CharacterCombatController>();
+                if (combat != null && combat.characterStatus != null) maxPlayerLv = combat.characterStatus.lv;
             }
-
-            // ステータスを計算
             currentHp = enemyData.maxHp * maxPlayerLv;
             float scaledAttack = enemyData.attackPower * maxPlayerLv;
-
-            if (weaponColliderScript != null)
-            {
-                weaponColliderScript.damagePower = scaledAttack;
-            }
-
-            Debug.Log($"[Scaling Success] {gameObject.name} Lv:{maxPlayerLv} HP:{currentHp}");
+            if (weaponColliderScript != null) weaponColliderScript.damagePower = scaledAttack;
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[Scaling Error] レベル計算中にエラーが発生しましたが、基本ステータスで続行します: {e.Message}");
-            // エラー時は基本値を使う
+            Debug.LogError($"[Scaling Error] {e.Message}");
             currentHp = enemyData.maxHp;
         }
     }
@@ -189,14 +171,26 @@ public class EvilController : MonoBehaviour
         if (isDead) return;
 
         currentHp -= damage;
-        Debug.Log($"{gameObject.name} Took Damage: {damage}. Current HP: {currentHp}");
 
-        // 攻撃中断
+        // --- 硬直開始 ---
+        isDamaged = true;
         isAttacking = false;
-        if (weaponCollider != null) weaponCollider.enabled = false;
-        if (agent.enabled) agent.isStopped = false;
 
-        // HP0以下なら死亡、それ以外ならダメージモーション
+        if (weaponCollider != null) weaponCollider.enabled = false;
+
+        if (agent.enabled)
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+            agent.isStopped = true;
+        }
+
+        if (animator != null)
+        {
+            // 即座に0を入れる
+            animator.SetFloat("Speed", 0f);
+        }
+
         if (currentHp <= 0)
         {
             Die();
@@ -204,7 +198,35 @@ public class EvilController : MonoBehaviour
         else
         {
             if (animator != null) animator.SetTrigger("Damage");
+
+            // ★追加: アニメーションイベントに頼らず、コルーチンで確実に復帰させる
+            // 既存のコルーチンがあれば止めてから新しく開始（連打対策）
+            StopAllCoroutines();
+            StartCoroutine(RecoverFromDamageRoutine());
         }
+    }
+
+    // ★追加: 確実な復帰用コルーチン
+    private IEnumerator RecoverFromDamageRoutine()
+    {
+        // 指定秒数待つ（インスペクターの Damage Stun Duration で調整可能）
+        yield return new WaitForSeconds(damageStunDuration);
+
+        // 復帰処理
+        isDamaged = false;
+
+        // 追跡再開のために停止解除
+        if (!isDead && agent.enabled)
+        {
+            agent.isStopped = false;
+        }
+    }
+
+    // OnDamageEndはもう不要ですが、イベントが残っていてもエラーにならないよう残しておきます
+    public void OnDamageEnd()
+    {
+        // コルーチン側で処理するので空でOK、もしくは即時復帰させたいなら以下を書く
+        // isDamaged = false; 
     }
 
     private void Die()
@@ -212,26 +234,18 @@ public class EvilController : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        Debug.Log($"{gameObject.name} は倒れた！");
+        // コルーチンも全て止める
+        StopAllCoroutines();
 
-        if (isBoss)
-        {
-            LevelUpAllPlayers();
-        }
-
+        if (isBoss) LevelUpAllPlayers();
         OnDeath?.Invoke();
 
-        // 報酬
         if (player != null && enemyData != null)
         {
             CharacterCombatController playerCombat = player.GetComponent<CharacterCombatController>();
-            if (playerCombat != null)
-            {
-                playerCombat.GainRewards(enemyData.expReward, enemyData.goldReward);
-            }
+            if (playerCombat != null) playerCombat.GainRewards(enemyData.expReward, enemyData.goldReward);
         }
 
-        // 停止処理
         if (agent.enabled)
         {
             agent.isStopped = true;
@@ -244,6 +258,7 @@ public class EvilController : MonoBehaviour
         Destroy(gameObject, 4.0f);
     }
 
+    // （以下、LevelUpAllPlayers, AttackBehaviorなどは変更なし）
     private void LevelUpAllPlayers()
     {
         CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
@@ -258,7 +273,6 @@ public class EvilController : MonoBehaviour
                 }
             }
         }
-        // SwapManagerがない場合は現在のプレイヤーだけ
         else if (player != null)
         {
             var combat = player.GetComponent<CharacterCombatController>();
@@ -266,20 +280,30 @@ public class EvilController : MonoBehaviour
         }
     }
 
-    // 攻撃行動などは既存のまま
     void AttackBehavior()
     {
         if (Time.time - lastAttackTime > attackCooldown)
         {
             lastAttackTime = Time.time;
             isAttacking = true;
-            transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
+            Vector3 direction = (player.position - transform.position).normalized;
+            direction.y = 0;
+            if (direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(direction);
             if (animator != null) animator.SetTrigger("Attack");
         }
         else
         {
-            if (agent.enabled) agent.isStopped = true;
-            if (animator != null) animator.SetFloat("Speed", 0);
+            if (agent.enabled)
+            {
+                agent.isStopped = true;
+                agent.velocity = Vector3.zero;
+            }
+            Vector3 direction = (player.position - transform.position).normalized;
+            direction.y = 0;
+            if (direction != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 5f);
+            }
         }
     }
 
@@ -294,7 +318,11 @@ public class EvilController : MonoBehaviour
 
     void IdleBehavior()
     {
-        if (agent.enabled) agent.isStopped = true;
+        if (agent.enabled)
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+        }
     }
 
     public void OnAttackEnd()

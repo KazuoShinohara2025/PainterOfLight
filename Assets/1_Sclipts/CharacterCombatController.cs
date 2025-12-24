@@ -285,6 +285,13 @@ public class CharacterCombatController : MonoBehaviour
         float defense = characterStatus != null ? characterStatus.baseDefense : 0;
         float finalDamage = Mathf.Max(0, damage - defense);
         CurrentHp -= finalDamage;
+
+        // ★追加: ダメージを受けたら攻撃予約（トリガー）を消す
+        animator.ResetTrigger(characterStatus.attackAnimationTrigger);
+        animator.ResetTrigger(characterStatus.lightingAnimationTrigger);
+        animator.ResetTrigger(characterStatus.skillAnimationTrigger);
+        animator.ResetTrigger(characterStatus.ultAnimationTrigger);
+
         animator.SetTrigger("Damage");
         if (CurrentHp <= 0) PlayerDie();
     }

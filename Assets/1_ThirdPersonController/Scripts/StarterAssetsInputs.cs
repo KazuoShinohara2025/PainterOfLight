@@ -5,26 +5,26 @@ using UnityEngine.InputSystem;
 
 namespace StarterAssets
 {
-	public class StarterAssetsInputs : MonoBehaviour
-	{
-		[Header("Character Input Values")]
-		public Vector2 move;
-		public Vector2 look;
-		public bool jump;
-		public bool sprint;
-		public bool interact;
-		public bool attack;
-		public bool lighting;
-		public bool skill;
-		public bool ult;
+    public class StarterAssetsInputs : MonoBehaviour
+    {
+        [Header("Character Input Values")]
+        public Vector2 move;
+        public Vector2 look;
+        public bool jump;
+        public bool sprint;
+        public bool interact;
+        public bool attack;
+        public bool lighting;
+        public bool skill;
+        public bool ult;
 
 
         [Header("Movement Settings")]
-		public bool analogMovement;
+        public bool analogMovement;
 
-		[Header("Mouse Cursor Settings")]
-		public bool cursorLocked = true;
-		public bool cursorInputForLook = true;
+        [Header("Mouse Cursor Settings")]
+        public bool cursorLocked = true;
+        public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
 		public void OnMove(InputValue value)
@@ -53,75 +53,85 @@ namespace StarterAssets
 		public void OnInteract(InputValue value)
 		{
 			InteractInput(value.isPressed);
-        }
+		}
+
 		public void OnAttack(InputValue value)
 		{
 			AttackInput(value.isPressed);
-        }
+		}
+
 		public void OnLighting(InputValue value)
 		{
 			LightingInput(value.isPressed);
-        }
-		public void OnSkil(InputValue value)
+		}
+
+		// šC³‰ÓŠ: OnSkil -> OnSkill ("l"‚ð’Ç‰Á)
+		public void OnSkill(InputValue value)
 		{
-			SkilInput(value.isPressed);
-        }
+			SkillInput(value.isPressed);
+		}
+
 		public void OnUlt(InputValue value)
 		{
 			UltInput(value.isPressed);
-        }
+		}
 #endif
 
 
         public void MoveInput(Vector2 newMoveDirection)
-		{
-			move = newMoveDirection;
-		} 
+        {
+            move = newMoveDirection;
+        }
 
-		public void LookInput(Vector2 newLookDirection)
-		{
-			look = newLookDirection;
-		}
+        public void LookInput(Vector2 newLookDirection)
+        {
+            look = newLookDirection;
+        }
 
-		public void JumpInput(bool newJumpState)
-		{
-			jump = newJumpState;
-		}
+        public void JumpInput(bool newJumpState)
+        {
+            jump = newJumpState;
+        }
 
-		public void SprintInput(bool newSprintState)
-		{
-			sprint = newSprintState;
-		}
+        public void SprintInput(bool newSprintState)
+        {
+            sprint = newSprintState;
+        }
 
-		public void InteractInput(bool newSelectState)
-		{
+        public void InteractInput(bool newSelectState)
+        {
             interact = newSelectState;
         }
-		public void AttackInput(bool newAttackState)
-		{
-			attack = newAttackState;
-        }
-		public void LightingInput(bool newLightingState)
-		{
-			lighting = newLightingState;
-        }
-		public void SkilInput(bool newSkilState)
-		{
-			skill = newSkilState;
-        }
-		public void UltInput(bool newUltState)
-		{
-			ult = newUltState;
-        }
-        private void OnApplicationFocus(bool hasFocus)
-		{
-			SetCursorState(cursorLocked);
-		}
 
-		private void SetCursorState(bool newState)
-		{
-			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
-		}
-	}
-	
+        public void AttackInput(bool newAttackState)
+        {
+            attack = newAttackState;
+        }
+
+        public void LightingInput(bool newLightingState)
+        {
+            lighting = newLightingState;
+        }
+
+        // šC³‰ÓŠ: SkilInput -> SkillInput ("l"‚ð’Ç‰Á)
+        public void SkillInput(bool newSkillState)
+        {
+            skill = newSkillState;
+        }
+
+        public void UltInput(bool newUltState)
+        {
+            ult = newUltState;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            SetCursorState(cursorLocked);
+        }
+
+        private void SetCursorState(bool newState)
+        {
+            Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+        }
+    }
 }
