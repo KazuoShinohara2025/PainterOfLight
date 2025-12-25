@@ -29,9 +29,17 @@ public class UISoundManager : MonoBehaviour
     // ボタンの OnClick() に登録するメソッド
     public void PlayClickSound()
     {
+        // ★このログが出るか確認してください
+        Debug.Log("Button Clicked! Attempting to play sound.");
+
         if (buttonClickSE != null && audioSource != null)
         {
             audioSource.PlayOneShot(buttonClickSE);
+        }
+        else
+        {
+            if (buttonClickSE == null) Debug.LogError("ButtonClickSE が設定されていません！");
+            if (audioSource == null) Debug.LogError("AudioSource がありません！");
         }
     }
 }

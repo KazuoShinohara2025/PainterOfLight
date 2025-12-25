@@ -26,7 +26,6 @@ public class EvilController : MonoBehaviour
     [Tooltip("ダメージを受けた時の硬直時間（秒）")]
     public float damageStunDuration = 0.5f;
 
-    // ★追加: オーディオ設定
     [Header("Audio Clips")]
     public AudioClip attackSE;
     public AudioClip idleVoiceSE;
@@ -34,6 +33,13 @@ public class EvilController : MonoBehaviour
     public float minVoiceInterval = 5f;
     [Tooltip("Idleボイスが鳴る最大間隔（秒）")]
     public float maxVoiceInterval = 10f;
+
+    // ★追加: フローティングテキスト関連
+    [Header("UI / Floating Text")]
+    [Tooltip("FloatingTextのプレハブ")]
+    public GameObject floatingTextPrefab;
+    [Tooltip("テキストが出る場所（頭上など）。未設定なら自分の位置")]
+    public Transform popupSpawnPoint;
 
     [Header("ボス設定")]
     public bool isBoss = false;
@@ -45,7 +51,6 @@ public class EvilController : MonoBehaviour
     private bool isAttacking = false;
     private bool isDamaged = false;
 
-    // Audio制御用
     private AudioSource audioSource;
     private float nextVoiceTime = 0f;
 
@@ -57,10 +62,9 @@ public class EvilController : MonoBehaviour
         if (animator == null) animator = GetComponent<Animator>();
         myCollider = GetComponent<CapsuleCollider>();
 
-        // ★追加: AudioSource取得と設定
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.spatialBlend = 1.0f; // 3D音響にする
+        audioSource.spatialBlend = 1.0f;
         audioSource.minDistance = 2.0f;
         audioSource.maxDistance = 15.0f;
 
@@ -91,7 +95,6 @@ public class EvilController : MonoBehaviour
             if (player == null) return;
         }
 
-        // ダメージ中や攻撃中は「移動判断」だけ止める
         if (isAttacking || isDamaged)
         {
             if (agent.enabled && !agent.isStopped)
@@ -99,14 +102,12 @@ public class EvilController : MonoBehaviour
                 agent.isStopped = true;
                 agent.velocity = Vector3.zero;
             }
-            // 硬直中でもアニメーターのSpeedは0に更新し続ける
             UpdateAnimation();
             return;
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // --- 状態遷移 ---
         if (distanceToPlayer <= attackRange)
         {
             AttackBehavior();
@@ -127,7 +128,6 @@ public class EvilController : MonoBehaviour
     {
         if (animator == null || agent == null) return;
 
-        // 硬直中は強制的に 0 
         if (isAttacking || isDamaged)
         {
             animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
@@ -189,7 +189,10 @@ public class EvilController : MonoBehaviour
 
         currentHp -= damage;
 
-        // --- 硬直開始 ---
+        // ★追加: ダメージ数値を表示（白文字）
+        // transformを親に指定して、敵と一緒に動くようにしています
+        ShowFloatingText(damage.ToString("F0"), Color.white);
+
         isDamaged = true;
         isAttacking = false;
 
@@ -197,14 +200,14 @@ public class EvilController : MonoBehaviour
 
         if (agent.enabled)
         {
-            agent.ResetPath(); // パスをリセットして速度を0にする
+            agent.ResetPath();
             agent.velocity = Vector3.zero;
             agent.isStopped = true;
         }
 
         if (animator != null)
         {
-            animator.SetFloat("Speed", 0f); // 即座に0
+            animator.SetFloat("Speed", 0f);
         }
 
         if (currentHp <= 0)
@@ -214,10 +217,24 @@ public class EvilController : MonoBehaviour
         else
         {
             if (animator != null) animator.SetTrigger("Damage");
-
-            // 確実な復帰のためにコルーチンを使用
             StopAllCoroutines();
             StartCoroutine(RecoverFromDamageRoutine());
+        }
+    }
+
+    // ★追加: フローティングテキスト生成メソッド
+    private void ShowFloatingText(string text, Color color)
+    {
+        if (floatingTextPrefab == null) return;
+
+        Vector3 spawnPos = (popupSpawnPoint != null) ? popupSpawnPoint.position : transform.position + Vector3.up * 2.0f;
+        spawnPos += new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(0f, 0.5f), 0f);
+
+        GameObject go = Instantiate(floatingTextPrefab, spawnPos, Quaternion.identity, transform);
+        FloatingText ft = go.GetComponent<FloatingText>();
+        if (ft != null)
+        {
+            ft.Setup(text, color);
         }
     }
 
@@ -233,7 +250,6 @@ public class EvilController : MonoBehaviour
 
     public void OnDamageEnd()
     {
-        // コルーチンで管理するため空でOK
     }
 
     private void Die()
@@ -296,7 +312,6 @@ public class EvilController : MonoBehaviour
 
             if (animator != null) animator.SetTrigger("Attack");
 
-            // ★追加: 攻撃音
             if (attackSE != null && audioSource != null)
             {
                 audioSource.PlayOneShot(attackSE);
@@ -304,7 +319,6 @@ public class EvilController : MonoBehaviour
         }
         else
         {
-            // クールダウン中
             if (agent.enabled)
             {
                 agent.isStopped = true;
@@ -336,7 +350,6 @@ public class EvilController : MonoBehaviour
             agent.velocity = Vector3.zero;
         }
 
-        // ★追加: ランダムなタイミングでボイス再生
         if (Time.time >= nextVoiceTime)
         {
             if (idleVoiceSE != null && audioSource != null)

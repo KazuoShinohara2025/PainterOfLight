@@ -46,15 +46,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7204ce8375bbb664b89cc51b7db49c22, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.39792
+      value: -0.29322
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7204ce8375bbb664b89cc51b7db49c22, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.75921
+      value: 1.42416
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7204ce8375bbb664b89cc51b7db49c22, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.1903
+      value: -1.3345
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 7204ce8375bbb664b89cc51b7db49c22, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1263,6 +1263,8 @@ MonoBehaviour:
   idleVoiceSE: {fileID: 8300000, guid: 4b505fe322b726b448ea27209d82e6cb, type: 3}
   minVoiceInterval: 5
   maxVoiceInterval: 10
+  floatingTextPrefab: {fileID: 2148651619551713137, guid: 9c292e6d4cef290478492e24b0e69f9f, type: 3}
+  popupSpawnPoint: {fileID: 0}
   isBoss: 0
   OnDeath:
     m_PersistentCalls:
