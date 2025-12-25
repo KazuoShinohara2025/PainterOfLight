@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using System.Collections; // コルーチンに必要
+using System.Collections;
 
 public class EvilController : MonoBehaviour
 {
@@ -24,7 +24,16 @@ public class EvilController : MonoBehaviour
 
     [Header("ダメージ設定")]
     [Tooltip("ダメージを受けた時の硬直時間（秒）")]
-    public float damageStunDuration = 0.5f; // ★追加: アニメーションの長さに合わせて調整してください
+    public float damageStunDuration = 0.5f;
+
+    // ★追加: オーディオ設定
+    [Header("Audio Clips")]
+    public AudioClip attackSE;
+    public AudioClip idleVoiceSE;
+    [Tooltip("Idleボイスが鳴る最小間隔（秒）")]
+    public float minVoiceInterval = 5f;
+    [Tooltip("Idleボイスが鳴る最大間隔（秒）")]
+    public float maxVoiceInterval = 10f;
 
     [Header("ボス設定")]
     public bool isBoss = false;
@@ -36,6 +45,10 @@ public class EvilController : MonoBehaviour
     private bool isAttacking = false;
     private bool isDamaged = false;
 
+    // Audio制御用
+    private AudioSource audioSource;
+    private float nextVoiceTime = 0f;
+
     private CapsuleCollider myCollider;
 
     void Start()
@@ -43,6 +56,13 @@ public class EvilController : MonoBehaviour
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponent<Animator>();
         myCollider = GetComponent<CapsuleCollider>();
+
+        // ★追加: AudioSource取得と設定
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f; // 3D音響にする
+        audioSource.minDistance = 2.0f;
+        audioSource.maxDistance = 15.0f;
 
         FindPlayer();
 
@@ -71,17 +91,15 @@ public class EvilController : MonoBehaviour
             if (player == null) return;
         }
 
-        // ★修正: ダメージ中や攻撃中は「移動判断」だけ止めるが、アニメーション更新は止めない
+        // ダメージ中や攻撃中は「移動判断」だけ止める
         if (isAttacking || isDamaged)
         {
-            // Agentの動きを物理的に止める
             if (agent.enabled && !agent.isStopped)
             {
                 agent.isStopped = true;
                 agent.velocity = Vector3.zero;
             }
-
-            // ★重要: 硬直中でもアニメーターのSpeedは更新し続ける（0にするため）
+            // 硬直中でもアニメーターのSpeedは0に更新し続ける
             UpdateAnimation();
             return;
         }
@@ -109,7 +127,7 @@ public class EvilController : MonoBehaviour
     {
         if (animator == null || agent == null) return;
 
-        // 硬直中は強制的に 0 として扱う
+        // 硬直中は強制的に 0 
         if (isAttacking || isDamaged)
         {
             animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
@@ -122,7 +140,6 @@ public class EvilController : MonoBehaviour
         animator.SetFloat("Speed", currentSpeed, 0.1f, Time.deltaTime);
     }
 
-    // （FindPlayer, ApplyLevelScaling は変更なしのため省略）
     void FindPlayer()
     {
         GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -180,15 +197,14 @@ public class EvilController : MonoBehaviour
 
         if (agent.enabled)
         {
-            agent.ResetPath();
+            agent.ResetPath(); // パスをリセットして速度を0にする
             agent.velocity = Vector3.zero;
             agent.isStopped = true;
         }
 
         if (animator != null)
         {
-            // 即座に0を入れる
-            animator.SetFloat("Speed", 0f);
+            animator.SetFloat("Speed", 0f); // 即座に0
         }
 
         if (currentHp <= 0)
@@ -199,42 +215,31 @@ public class EvilController : MonoBehaviour
         {
             if (animator != null) animator.SetTrigger("Damage");
 
-            // ★追加: アニメーションイベントに頼らず、コルーチンで確実に復帰させる
-            // 既存のコルーチンがあれば止めてから新しく開始（連打対策）
+            // 確実な復帰のためにコルーチンを使用
             StopAllCoroutines();
             StartCoroutine(RecoverFromDamageRoutine());
         }
     }
 
-    // ★追加: 確実な復帰用コルーチン
     private IEnumerator RecoverFromDamageRoutine()
     {
-        // 指定秒数待つ（インスペクターの Damage Stun Duration で調整可能）
         yield return new WaitForSeconds(damageStunDuration);
-
-        // 復帰処理
         isDamaged = false;
-
-        // 追跡再開のために停止解除
         if (!isDead && agent.enabled)
         {
             agent.isStopped = false;
         }
     }
 
-    // OnDamageEndはもう不要ですが、イベントが残っていてもエラーにならないよう残しておきます
     public void OnDamageEnd()
     {
-        // コルーチン側で処理するので空でOK、もしくは即時復帰させたいなら以下を書く
-        // isDamaged = false; 
+        // コルーチンで管理するため空でOK
     }
 
     private void Die()
     {
         if (isDead) return;
         isDead = true;
-
-        // コルーチンも全て止める
         StopAllCoroutines();
 
         if (isBoss) LevelUpAllPlayers();
@@ -258,7 +263,6 @@ public class EvilController : MonoBehaviour
         Destroy(gameObject, 4.0f);
     }
 
-    // （以下、LevelUpAllPlayers, AttackBehaviorなどは変更なし）
     private void LevelUpAllPlayers()
     {
         CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
@@ -289,10 +293,18 @@ public class EvilController : MonoBehaviour
             Vector3 direction = (player.position - transform.position).normalized;
             direction.y = 0;
             if (direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(direction);
+
             if (animator != null) animator.SetTrigger("Attack");
+
+            // ★追加: 攻撃音
+            if (attackSE != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(attackSE);
+            }
         }
         else
         {
+            // クールダウン中
             if (agent.enabled)
             {
                 agent.isStopped = true;
@@ -322,6 +334,16 @@ public class EvilController : MonoBehaviour
         {
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
+        }
+
+        // ★追加: ランダムなタイミングでボイス再生
+        if (Time.time >= nextVoiceTime)
+        {
+            if (idleVoiceSE != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(idleVoiceSE);
+            }
+            nextVoiceTime = Time.time + Random.Range(minVoiceInterval, maxVoiceInterval);
         }
     }
 

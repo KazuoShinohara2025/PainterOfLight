@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using StarterAssets; // StarterAssetsInputsを使うために必要
+using StarterAssets;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
@@ -14,9 +14,6 @@ public class CharacterCombatController : MonoBehaviour
 
     [Header("攻撃判定")]
     public Collider weaponCollider;
-
-    // ★修正: InputActionReferenceは使わず、StarterAssetsInputs経由で入力を取得します
-    // public InputActionReference attackInput; // 削除または無視
 
     [Header("VFX Prefabs")]
     public GameObject attackVFX;
@@ -38,9 +35,21 @@ public class CharacterCombatController : MonoBehaviour
     [Tooltip("敵を索敵する範囲")]
     public float autoTargetRange = 10.0f;
 
+    // ★追加: オーディオ関連の設定
+    [Header("Audio Clips")]
+    [Tooltip("Attack/Skill/Ult時に鳴らすSE")]
+    public AudioClip attackSE;
+    [Tooltip("Lighting発動時のSE")]
+    public AudioClip lightingSE;
+    [Tooltip("死亡時のSE")]
+    public AudioClip deathSE;
+    [Tooltip("ステータスアップ時のSE")]
+    public AudioClip statusUpSE;
+
     private Animator animator;
     private PlayerInput playerInput;
-    private StarterAssetsInputs starterAssetsInputs; // 入力管理クラス
+    private StarterAssetsInputs starterAssetsInputs;
+    private AudioSource audioSource; // 音を鳴らすコンポーネント
 
     // プロパティ群
     public float CurrentHp
@@ -78,6 +87,10 @@ public class CharacterCombatController : MonoBehaviour
         animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
         starterAssetsInputs = GetComponent<StarterAssetsInputs>();
+
+        // ★追加: AudioSourceを取得（なければ追加）
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void Start()
@@ -103,23 +116,18 @@ public class CharacterCombatController : MonoBehaviour
         HandleCombatInput();
     }
 
-    // ★重要: Update内で入力を監視するメソッド
     private void HandleCombatInput()
     {
         if (starterAssetsInputs == null) return;
 
         // --- UI判定 ---
-        // マウスカーソルがUIの上にある、かつ 左クリック(Attack)入力があった場合
-        // 入力を消費(falseにする)して、処理を中断する
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            // UI上でのクリックなら、攻撃フラグが立っていても無効化してリセットする
             if (starterAssetsInputs.attack) starterAssetsInputs.attack = false;
             if (starterAssetsInputs.lighting) starterAssetsInputs.lighting = false;
             if (starterAssetsInputs.skill) starterAssetsInputs.skill = false;
             if (starterAssetsInputs.ult) starterAssetsInputs.ult = false;
-
-            return; // 攻撃処理には進まない
+            return;
         }
 
         // --- Attack ---
@@ -131,7 +139,7 @@ public class CharacterCombatController : MonoBehaviour
                 FaceNearestEnemy();
                 animator.SetTrigger(characterStatus.attackAnimationTrigger);
             }
-            starterAssetsInputs.attack = false; // 入力を消費
+            starterAssetsInputs.attack = false;
         }
 
         // --- Lighting ---
@@ -150,7 +158,7 @@ public class CharacterCombatController : MonoBehaviour
                     Debug.Log("Lightingのマナが足りません");
                 }
             }
-            starterAssetsInputs.lighting = false; // 入力を消費
+            starterAssetsInputs.lighting = false;
         }
 
         // --- Skill ---
@@ -169,7 +177,7 @@ public class CharacterCombatController : MonoBehaviour
                     Debug.Log("Skillのマナが足りません");
                 }
             }
-            starterAssetsInputs.skill = false; // 入力を消費
+            starterAssetsInputs.skill = false;
         }
 
         // --- Ult ---
@@ -187,13 +195,9 @@ public class CharacterCombatController : MonoBehaviour
                     Debug.Log("Ultのマナが足りません");
                 }
             }
-            starterAssetsInputs.ult = false; // 入力を消費
+            starterAssetsInputs.ult = false;
         }
     }
-
-    // --- OnAttack などの古いイベントメソッドは削除しました（Update内で処理するため） ---
-
-    // --- 以下、既存のヘルパーメソッド ---
 
     private void FaceNearestEnemy()
     {
@@ -219,6 +223,15 @@ public class CharacterCombatController : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    // ★追加: 音を鳴らすヘルパー関数
+    private void PlaySE(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 
     public void GainRewards(int exp, int gold)
@@ -251,6 +264,9 @@ public class CharacterCombatController : MonoBehaviour
 
         if (boostData.hp > 0) CurrentHp += boostData.hp;
         if (boostData.mana > 0) CurrentMana += boostData.mana;
+
+        // ★追加: ステータスアップ音
+        PlaySE(statusUpSE);
     }
 
     public void ApplyRandomStatBoost(ItemData boostData, int count)
@@ -272,11 +288,14 @@ public class CharacterCombatController : MonoBehaviour
                 case 6: if (boostData.totalGold > 0) CurrentGold += boostData.totalGold; break;
             }
         }
+        // ★追加: ステータスアップ音
+        PlaySE(statusUpSE);
     }
 
     public void LevelUp()
     {
         if (characterStatus != null) characterStatus.lv += 1;
+        // レベルアップ時も音を鳴らしたければここで PlaySE(statusUpSE);
     }
 
     public void PlayerTakeDamage(float damage)
@@ -286,7 +305,7 @@ public class CharacterCombatController : MonoBehaviour
         float finalDamage = Mathf.Max(0, damage - defense);
         CurrentHp -= finalDamage;
 
-        // ★追加: ダメージを受けたら攻撃予約（トリガー）を消す
+        // ★重要: ダメージを受けたら攻撃予約（トリガー）を全てリセットして暴発を防ぐ
         animator.ResetTrigger(characterStatus.attackAnimationTrigger);
         animator.ResetTrigger(characterStatus.lightingAnimationTrigger);
         animator.ResetTrigger(characterStatus.skillAnimationTrigger);
@@ -311,26 +330,43 @@ public class CharacterCombatController : MonoBehaviour
         float waitTime = 3.0f;
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("Die") || stateInfo.IsTag("Die")) waitTime = stateInfo.length;
+
         yield return new WaitForSeconds(waitTime);
+
+        // ★追加: ゲームオーバー表示に合わせてDeath音
+        PlaySE(deathSE);
+
         if (gameOverUIManager != null) gameOverUIManager.ShowGameOver();
     }
 
     public void TriggerAttackVFX()
     {
-        SpawnVFX(attackVFX, attackSpawnPoint, characterStatus.baseAttack * characterStatus.attackDamageMultiplier);
+        float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.attackDamageMultiplier);
+        SpawnVFX(attackVFX, attackSpawnPoint, damage);
+        // ★追加: SE再生
+        PlaySE(attackSE);
     }
     public void TriggerLightingVFX()
     {
-        SpawnVFX(lightingVFX, lightingSpawnPoint, characterStatus.lightingRange * characterStatus.lightingRangeMultiplier);
+        float damage = CalculateDamage(characterStatus.lightingRange, characterStatus.lightingRangeMultiplier);
+        SpawnVFX(lightingVFX, lightingSpawnPoint, damage);
         if (manaVisualManager != null) manaVisualManager.SpawnSphereVisual();
+        // ★追加: SE再生
+        PlaySE(lightingSE);
     }
     public void TriggerSkillVFX()
     {
-        SpawnVFX(skillVFX, skillSpawnPoint, characterStatus.baseAttack * characterStatus.skillDamageMultiplier);
+        float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.skillDamageMultiplier);
+        SpawnVFX(skillVFX, skillSpawnPoint, damage);
+        // ★追加: SE再生 (AttackSEと同じものを鳴らす設定)
+        PlaySE(attackSE);
     }
     public void TriggerUltimateVFX()
     {
-        SpawnVFX(ultVFX, ultimateSpawnPoint, characterStatus.baseAttack * characterStatus.ultDamageMultiplier);
+        float damage = CalculateDamage(characterStatus.baseAttack, characterStatus.ultDamageMultiplier);
+        SpawnVFX(ultVFX, ultimateSpawnPoint, damage);
+        // ★追加: SE再生
+        PlaySE(attackSE);
     }
 
     public void OnLightingEnd() { isMovementLocked = false; }
@@ -346,7 +382,7 @@ public class CharacterCombatController : MonoBehaviour
             Destroy(vfx, 3.0f);
         }
     }
-
+    float CalculateDamage(float baseVal, float multiplier) { return baseVal * multiplier; }
     public void EnableAttackCollider() { if (weaponCollider != null) weaponCollider.enabled = true; }
     public void DisableAttackCollider() { if (weaponCollider != null) weaponCollider.enabled = false; }
 }
