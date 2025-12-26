@@ -1,15 +1,19 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI; // Sliderに必要
-using UnityEngine.SceneManagement; // シーン遷移に必要
+using TMPro;          // TextMeshProに必要
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+using StarterAssets;
+#endif
 
 public class StatusMenuController : MonoBehaviour
 {
     [Header("UI Components")]
+    [Tooltip("Escキーで開閉するパネル")]
     public GameObject statusPanel;
 
-    [Header("Status Text")]
+    [Header("Status Text (TextMeshPro)")]
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI hpText;
@@ -19,69 +23,131 @@ public class StatusMenuController : MonoBehaviour
     public TextMeshProUGUI expText;
     public TextMeshProUGUI goldText;
 
-    private bool isMenuOpen = false;
-
     [Header("Settings UI")]
     public Slider volumeSlider;
-    // bgmAudioSource は不要になったので削除しました
+
+    [Header("Scene Settings")]
+    [Tooltip("カーソルを常に表示するシーン名")]
+    public string titleSceneName = "TitleScene";
+
+    private bool isMenuOpen = false;
+    private StarterAssetsInputs _input;
 
     void Start()
     {
+        // 初期化：メニューは閉じておく
+        isMenuOpen = false;
         if (statusPanel != null) statusPanel.SetActive(false);
+
+        // カーソル状態の初期化
+        UpdateCursorState();
 
         // --- 音量設定の初期化 ---
         if (volumeSlider != null)
         {
-            // 1. 前回の設定（セーブデータ）を読み込む。なければ 0.5 (50%)
+            // 1. 保存された設定を読み込む（なければ0.5）
             float savedVolume = PlayerPrefs.GetFloat("MasterVolume", 0.5f);
 
-            // 2. ゲーム全体の音量に適用
+            // 2. 適用
             AudioListener.volume = savedVolume;
-
-            // 3. スライダーの位置を合わせる
             volumeSlider.value = savedVolume;
 
-            // 4. スライダーを動かした時の処理を登録
+            // 3. イベント登録
             volumeSlider.onValueChanged.AddListener(SetVolume);
-        }
-        else
-        {
-            Debug.LogWarning("StatusMenuController: Volume Sliderが設定されていません");
         }
     }
 
     void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        // Escキー入力検知
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             ToggleMenu();
         }
+
+        // タイトル画面でのカーソル強制表示（安全策）
+        if (SceneManager.GetActiveScene().name == titleSceneName && !isMenuOpen)
+        {
+            if (!Cursor.visible || Cursor.lockState != CursorLockMode.None)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
     }
 
-    private void ToggleMenu()
+    // --- メニュー開閉処理 ---
+
+    public void ToggleMenu()
     {
         isMenuOpen = !isMenuOpen;
-        if (isMenuOpen) OpenMenu();
-        else CloseMenu();
+        if (isMenuOpen) OpenMenu(); else CloseMenu();
     }
 
     private void OpenMenu()
     {
-        UpdateUI(); // 開いた瞬間に最新の値を取得
+        isMenuOpen = true;
         if (statusPanel != null) statusPanel.SetActive(true);
+
+        // ゲーム時間を止める
         Time.timeScale = 0f;
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+
+        // ステータス表示を更新
+        UpdateUI();
+
+        // カーソルを表示
+        UpdateCursorState();
     }
 
-    public void CloseMenu()
+    private void CloseMenu()
     {
-        if (statusPanel != null) statusPanel.SetActive(false);
         isMenuOpen = false;
+        if (statusPanel != null) statusPanel.SetActive(false);
+
+        // ゲーム時間を再開
         Time.timeScale = 1f;
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+
+        // カーソルを非表示（タイトル画面以外）
+        UpdateCursorState();
     }
+
+    // --- カーソル制御 ---
+
+    private void UpdateCursorState()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        // タイトル画面 または メニューが開いている時はカーソル表示
+        if (currentScene == titleSceneName || isMenuOpen)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            // ゲーム中でメニューが閉じている時はカーソル非表示＆ロック
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        // プレイヤーの視点操作を有効/無効化
+        ApplyToPlayerInput(!isMenuOpen);
+    }
+
+    private void ApplyToPlayerInput(bool enableLook)
+    {
+        // StarterAssetsInputsを探す
+        if (_input == null) _input = FindObjectOfType<StarterAssetsInputs>();
+
+        if (_input != null)
+        {
+            // タイトル画面などプレイヤーがいない場合は無視されるので安全
+            _input.cursorInputForLook = enableLook;
+            _input.cursorLocked = enableLook;
+        }
+    }
+
+    // --- UI更新処理 ---
 
     private void UpdateUI()
     {
@@ -93,6 +159,8 @@ public class StatusMenuController : MonoBehaviour
             {
                 PlayerData data = combatController.characterStatus;
 
+                // 各テキストへ反映
+                // ※PlayerDataに "Name" 変数がある前提です
                 if (nameText) nameText.text = data.Name;
                 if (levelText) levelText.text = $"{data.lv}";
 
@@ -108,29 +176,41 @@ public class StatusMenuController : MonoBehaviour
         }
     }
 
-    // --- 設定関連 ---
+    // --- 設定（音量）関連 ---
 
-    // ★修正: ゲーム全体の音量を変更し、保存する
     public void SetVolume(float volume)
     {
         AudioListener.volume = volume;
-
-        // 次回起動時のために保存
         PlayerPrefs.SetFloat("MasterVolume", volume);
         PlayerPrefs.Save();
     }
 
-    // --- Reset & Exit ---
+    // --- ボタン機能（Reset / Exit） ---
 
     public void OnResetButtonClicked()
     {
+        // 時間を戻してから遷移しないと、次のシーンでも止まったままになる
         Time.timeScale = 1f;
+
         ResetAllCharactersData();
+
+        // タイトルへ戻る
         SceneManager.LoadScene("TitleScene");
+    }
+
+    public void OnExitButtonClicked()
+    {
+        Debug.Log("Game Quit");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 
     private void ResetAllCharactersData()
     {
+        // キャラクター切り替え管理マネージャーがあれば全員リセット
         CharacterSwapManager swapManager = FindObjectOfType<CharacterSwapManager>();
         if (swapManager != null && swapManager.characters != null)
         {
@@ -146,15 +226,18 @@ public class StatusMenuController : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void OnExitButtonClicked()
-    {
-        Debug.Log("Game Quit");
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        else
+        {
+            // マネージャーがない場合（単体テスト時など）は現在のプレイヤーのみリセット
+            GameObject currentPlayer = GameObject.FindGameObjectWithTag("Player");
+            if (currentPlayer != null)
+            {
+                var combat = currentPlayer.GetComponent<CharacterCombatController>();
+                if (combat != null && combat.characterStatus != null)
+                {
+                    combat.characterStatus.ResetStatus();
+                }
+            }
+        }
     }
 }
